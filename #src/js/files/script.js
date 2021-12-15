@@ -29,3 +29,65 @@
 //Последовательность чисел Фибоначчи определяется формулой Fn = Fn-1 + Fn-2.
 //То есть, следующее число получается как сумма двух предыдущих.
 //Первые два числа равны 1, затем 2(1+1), затем 3(1+2), 5(2+3) и так далее: 1, 1, 2, 3, 5, 8, 13, 21....
+
+// function fib(n) {
+// 	if (n == 1 || n == 2) {
+// 		return 1;
+// 	} else {
+// 		let arr = [];
+// 		for (let i = 2; i < n; i++) {
+// 			arr[0] = 0;
+// 			arr[1] = 1
+// 			arr[i] = arr[i - 1] + arr[i - 2];
+// 		}
+// 		return arr[n - 1] + arr[n - 2];
+// 	}
+// }
+
+// function fib(n) {
+// 	let a = 1;
+// 	let b = 1;
+// 	for (let i = 3; i <= n; i++) {
+// 		let c = a + b;
+// 		a = b;
+// 		b = c;
+// 	}
+// 	return b;
+
+// }
+//console.log(fib(77));
+
+//*Вывод односвязного списка
+//Напишите функцию printList(list), которая выводит элементы списка по одному.
+let list = {
+	value: 1,
+	next: {
+		value: 2,
+		next: {
+			value: 3,
+			next: {
+				value: 4,
+				next: null
+			}
+		}
+	}
+};
+
+
+let vr = []
+function printList(arr) {
+
+	vr.push(arr.value);
+
+	if (arr.next) {
+		printList(arr.next)
+	}
+}
+
+printList(list);
+console.log(vr);
+
+
+
+
+
