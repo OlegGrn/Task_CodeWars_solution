@@ -1,0 +1,33 @@
+﻿С правами администратора!
+
+В терминале:
+1) npm i
+2) gulp
+
+Переустановка node-sass
+npm rebuild node-sass
+
+npm i gulp-sass@4.1.1  - решение проблемы с sass
+
+Проблема с pyton
+npm install --global windows-build-tools
+
+Варианты решения проблем c imagemin:
+- папки и файлы должны быть названы латиницей без пробелов
+- тег img и его содержимое должны быть записаны в одну строку без переносов
+- в атрибуте src должен быть указан путь к существующей картинке
+
+…or create a new repository on the command line
+echo "# 1_my_start_gulp" >> README.md
+git init
+git add README.md
+git commit -m "first commit"
+git branch -M main
+git remote add origin https://github.com/OlegGrn/1_my_start_gulp.git
+git push -u origin main
+
+
+…or push an existing repository from the command line
+git remote add origin https://github.com/OlegGrn/1_my_start_gulp.git
+git branch -M main
+git push -u origin main
