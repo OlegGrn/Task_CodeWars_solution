@@ -87,5 +87,74 @@ function printList(arr) {
 printList(list);
 console.log(vr);
 
+//* Напишите функцию sum, которая работает таким образом: sum(a)(b) = a+b.
+// Да, именно таким образом, используя двойные круглые скобки (не опечатка).
+// sum(1)(2) = 3
+
+function sum(x) {
+
+	function summ(b) {
+		return b + x;
+	}
+
+	return summ;
+}
+
+let result = sum(5)(-1);
+console.log(result);
+
+//*Сделайте набор «готовых к употреблению» фильтров:
+// Они должны использоваться таким образом:
+// arr.filter(inBetween(3,6)) – выбирает только значения между 3 и 6 (включительно).
+// arr.filter(inArray([1,2,3])) – выбирает только элементы, совпадающие с одним из элементов массива
+
+let arr = [1, 2, 3, 4, 5, 6, 7];
+
+function inBetween(a, b) {
+	return item => (item >= a && item <= b);
+}
+
+function inArray(ar) {
+	return item => ar.includes(item);
+}
+
+let res = arr.filter(inBetween(3, 6));
+let res2 = arr.filter(inArray([1, 2, 10]));
+
+console.log(res);
+console.log(res2);
+
+//*Напишите функцию byField, которая может быть использована для этого.
+//У нас есть массив объектов, который нужно отсортировать:
+//Обычный способ был бы таким:
+
+// по имени (Ann, John, Pete)
+//users.sort((a, b) => a.name > b.name ? 1 : -1);
+
+// по возрасту (Pete, Ann, John)
+//users.sort((a, b) => a.age > b.age ? 1 : -1);
+
+// Можем ли мы сделать его короче, скажем, вот таким?
+
+// users.sort(byField('name'));
+// users.sort(byField('age'));
+
+// То есть, чтобы вместо функции, мы просто писали byField(fieldName).
+//Напишите функцию byField, которая может быть использована для этого.
+
+let users = [
+	{ name: "John", age: 20, surname: "Johnson" },
+	{ name: "Pete", age: 18, surname: "Peterson" },
+	{ name: "Ann", age: 19, surname: "Hathaway" }
+];
+
+function byField(fieldName) {
+	return (a, b) => a[fieldName] > b[fieldName] ? 1 : -1;
+
+}
+
+console.log(users.sort(byField('age')));
+
+
 
 
