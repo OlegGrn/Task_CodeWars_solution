@@ -155,6 +155,81 @@ function byField(fieldName) {
 
 console.log(users.sort(byField('age')));
 
+//* Измените код makeCounter() так, чтобы счётчик мог увеличивать и устанавливать значение:
+// counter() должен возвращать следующее значение (как и раньше).
+// counter.set(value) должен устанавливать счётчику значение value.
+// counter.decrease() должен уменьшать значение счётчика на 1.
+// Посмотрите код из песочницы с полным примером использования.
+
+// P.S. Для того, чтобы сохранить текущее значение счётчика, можно воспользоваться как 
+//замыканием,
+// так и свойством функции. Или сделать два варианта решения: и так, и так.
+
+function makeCounter() {
+
+	function counter() {
+		return counter.count++;
+	};
+	counter.count = 0;
+
+	counter.set = (value) => counter.count = value;
+	counter.decrease = () => --counter.count;
+
+	return counter;
+}
+
+let counter = makeCounter();
+
+counter.set(10);
+alert(counter()); // 1
+alert(counter()); // 1
+counter.set(5);
+alert(counter()); // 1
+alert(counter()); // 1
+counter.decrease();
+alert(counter()); // 1
+
+//*Напишите функцию printNumbers(from, to), 
+//*которая выводит число каждую секунду, начиная от from и заканчивая to.
+// Сделайте два варианта решения.
+// Используя setInterval.
+// Используя рекурсивный setTimeout.
+
+
+function printNumbers(from, to) {
+
+	let timerId = setInterval(show, 2000);
+
+	function show() {
+		if (from == to) clearInterval(timerId);
+		alert(from);
+		return from++;
+	}
+}
+
+printNumbers(2, 5);
+
+function printNumbers(from, to) {
+
+	setTimeout(show, 2000);
+	function show() {
+		alert(from);
+		if (from < to) setTimeout(show, 2000);
+		return from++;
+	}
+}
+
+function printNumbers(from, to) {
+
+	setTimeout(function show() {
+		alert(from);
+		if (from < to) setTimeout(show, 2000);
+		return from++;
+	}, 2000);
+}
+printNumbers(2, 5);
+
+
 
 
 
