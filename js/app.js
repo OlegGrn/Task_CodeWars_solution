@@ -1,5 +1,26 @@
 "use strict";
 
+// let nameUser = prompt('Whot your name?', '');
+// console.log(`User name: ${nameUser}`);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
