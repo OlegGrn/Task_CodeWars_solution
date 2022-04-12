@@ -1,4 +1,22 @@
 
+//* Напишите код, который выводит все простые числа из интервала от 2 до n.
+let start = 2;
+let end = 15;
+
+outer:
+for (start; start < end; start++) {
+
+	for (let i = 2; i < start; i++) {
+
+		if (start % i == 0) continue outer;
+	}
+	console.log(start);
+}
+
+//*Напишите функцию pow(x,n), которая возвращает x в степени n.
+let pow = (x, n) => (n == 1) ? x : x * pow(x, n - 1);
+
+
 //* Напишите функцию sumTo(n), которая вычисляет сумму чисел 1 + 2 + ... + n.
 //sumTo(n) = n + sumTo(n-1) for n > 1.
 
