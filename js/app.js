@@ -1,5 +1,36 @@
 "use strict";
 
+// let nameUser = prompt('Whot your name?', '');
+// console.log(`User name: ${nameUser}`);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 // for (let i = 2; i < 10; i++) {
 // 	if (!(i % 2 === 0)) continue;
