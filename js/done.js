@@ -1,4 +1,76 @@
 
+
+
+
+//*
+/*Реализуйте функцию unique_in_order, которая принимает в качестве аргумента 
+последовательность и возвращает список элементов без каких-либо элементов с одинаковым 
+значением рядом друг с другом и с сохранением исходного порядка элементов.
+Test.assertSimilar(uniqueInOrder('AAAABBBCCDAABBB'), ['A','B','C','D','A','B'])*/
+
+let uniqueInOrder = function (iterable) {
+
+	return iterable.split('').filter((item, index, arr) => {
+		if (index <= (arr.length - 1)) {
+			let bul;
+			if (item == arr[index + 1]) {
+				bul = false;
+			} else bul = true;
+			return bul;
+		}
+	});
+}
+console.log(uniqueInOrder('AAAABBBCCDAABBB'));
+
+//*прогулка по городу - каждая буква это сторона света. Одна буква - путь в одну минуту
+//* нужно вернуться в исходную точку через 10 минут
+
+let walk = ['n', 's', 'n', 's', 'n', 's', 'n', 's', 'n', 's'];
+//let walk = ['w', 'e', 'w', 's'];
+let path = 0;
+
+
+function isValidWalk(walk) {
+
+	if (walk.length == 10) {
+
+		let vertical = [];
+		let horizon = [];
+
+		walk.forEach(leter => {
+			(leter == 'w') ? vertical.push(-1) :
+				(leter == 'e') ? vertical.push(1) :
+					(leter == 'n') ? horizon.push(1) :
+						horizon.push(-1);
+		});
+		let pathVertical = vertical.reduce((sum, item) => sum + item, 0);
+		let pathHorizon = horizon.reduce((sum, item) => sum + item, 0);
+
+		if (pathVertical == 0 && pathHorizon == 0) {
+			return true
+		} else return false
+
+	} else return false
+
+}
+
+
+
+//* отфильтровать гласные в строке
+function disemvowel(str) {
+	let vowels = "aeiou";
+
+	let result = str.split('').filter(leter => {
+		return !vowels.includes(leter.toLowerCase())
+	});
+	str = result.join('');
+
+	return str;
+}
+
+let str = "This website is for losers LOL!"
+console.log(disemvowel(str));
+//!------------------UP CODEWARS---------------------------------------------- 
 //* Напишите код, который выводит все простые числа из интервала от 2 до n.
 let start = 2;
 let end = 15;
