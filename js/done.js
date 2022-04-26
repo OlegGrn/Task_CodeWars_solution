@@ -3,6 +3,18 @@
 
 
 //*
+/*Завершите findNextSquareметод, который находит следующий целочисленный идеальный квадрат после квадрата, 
+переданного в качестве параметра. Напомним, что целочисленный совершенный квадрат — это целое число n, 
+такое что sqrt(n) также является целым числом.
+Если параметр сам по себе не является идеальным квадратом -1, его следует вернуть. 
+Вы можете предположить, что параметр неотрицательный.*/
+
+function findNextSquare(sq) {
+	let prev = sq ** (1 / 2);
+	return (Math.ceil(prev) - prev > 0) ? -1 : Math.pow(++prev, 2);
+}
+
+//*
 /*Реализуйте функцию unique_in_order, которая принимает в качестве аргумента 
 последовательность и возвращает список элементов без каких-либо элементов с одинаковым 
 значением рядом друг с другом и с сохранением исходного порядка элементов.
@@ -10,13 +22,9 @@ Test.assertSimilar(uniqueInOrder('AAAABBBCCDAABBB'), ['A','B','C','D','A','B'])*
 
 let uniqueInOrder = function (iterable) {
 
-	return iterable.split('').filter((item, index, arr) => {
-		if (index <= (arr.length - 1)) {
-			let bul;
-			if (item == arr[index + 1]) {
-				bul = false;
-			} else bul = true;
-			return bul;
+	return Array.from(iterable).filter((item, index, arr) => {
+		while (index < arr.length) {
+			return (item !== arr[++index])
 		}
 	});
 }
