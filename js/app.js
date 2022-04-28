@@ -2,44 +2,17 @@
 
 
 
-function validParentheses(parens) {
-
-	return parens.split('').every((el, index, arr) => {
-		return (el !== arr[arr.length - 1 - index]);
-	})
+function duplicateEncode(word) {
+	return word
+		.toLowerCase()
+		.split('')
+		.map(function (a, i, w) {
+			return w.indexOf(a) == w.lastIndexOf(a) ? '(' : ')'
+		})
+		.join('');
 }
 
-
-
-
-
-
-
-let x = validParentheses("(()()()())(())") // false
-// let e = validParentheses("()") // true
-
+let x = duplicateEncode("ddin") // (((
 console.log(x);
-// console.log(e);
-
-
-
-//return '\u{0028}' + '\u{0029}';
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 

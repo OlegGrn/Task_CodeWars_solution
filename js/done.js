@@ -1,7 +1,86 @@
+
+//*
+/*преобразовать строку в новую строку, где каждый символ в новой строке соответствует тому, 
+"("если этот символ появляется только один раз в исходной строке или ")"если этот символ появляется
+ в исходной строке более одного раза. Игнорировать заглавные буквы при определении, 
+ является ли символ дубликатом.*/
+//? Вариант 1 МОЙ
+function duplicateEncode(word) {
+	word = word.toLowerCase();
+	let result = "";
+	for (let i = 0; i < word.length; i++) {
+		let pos = 0;
+		let count = 0;
+		while (true) {
+			let foundPos = word.indexOf(word[i], pos);
+			if (foundPos == -1) {
+				(count > 1) ? result += ')' : result += '(';
+				break;
+			}
+			pos = foundPos + 1;
+			count += 1;
+		}
+	}
+	return result;
+}
+//? Вариант 2 МОЙ НЕ МОЁ
+
+function duplicateEncode(word) {
+	return word
+		.toLowerCase()
+		.split('')
+		.map(function (a, i, w) {
+			return w.indexOf(a) == w.lastIndexOf(a) ? '(' : ')'
+		})
+		.join('');
+}
+
+
+
+
+//*Напишите функцию проверяющая скобки
+//? Вариант 1 МОЙ
+function validParentheses(parens) {
+	let arrParens = parens.split('');
+	outer:
+	while (true) {
+		if (arrParens[0] == ')' || arrParens[arrParens.length - 1] == '(') break;
+		if (arrParens.length == 0) return true;
+
+		for (let i = 1; i < arrParens.length; i++) {
+			if (i !== arrParens.indexOf(arrParens[i])) continue;
+			arrParens.splice(--i, 2);
+			continue outer;
+		}
+		break;
+	}
+	return false
+}
+
+//? Вариант 2 МОЙ НЕ МОЁ
+function validParentheses(parens) {
+	var n = 0;
+	for (var i = 0; i < parens.length; i++) {
+		if (parens[i] == '(') n++;
+		if (parens[i] == ')') n--;
+		if (n < 0) return false;
+	}
+	return n == 0;
+}
+
+//? Вариант 3 МОЙ НЕ МОЁ
+function validParentheses(parens) {
+	var indent = 0;
+	for (var i = 0; i < parens.length && indent >= 0; i++) {
+		indent += (parens[i] == '(') ? 1 : -1;
+	}
+	return (indent == 0);
+}
+
 //*
 /*Напишите функцию, которая найдет все анаграммы слова из списка. Вам будет дано два входа слово и 
 массив со словами. Вы должны вернуть массив всех анаграмм или пустой массив, если их нет.*/
-//? Вариант 2
+//? Вариант 2  МОЙ
 
 function anagrams(word, words) {
 	let result = [];
@@ -13,7 +92,7 @@ function anagrams(word, words) {
 }
 
 
-//? Вариант 1
+//? Вариант 1  МОЙ
 function anagrams(word, words) {
 
 	let result = [];
