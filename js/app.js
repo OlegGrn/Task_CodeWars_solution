@@ -2,17 +2,31 @@
 
 
 
-function duplicateEncode(word) {
-	return word
-		.toLowerCase()
-		.split('')
-		.map(function (a, i, w) {
-			return w.indexOf(a) == w.lastIndexOf(a) ? '(' : ')'
-		})
-		.join('');
-}
+function solution(input, markers) {
 
-let x = duplicateEncode("ddin") // (((
-console.log(x);
+
+	return input.split('\n')
+		.map(function (sub, ind, arr) {
+
+		})
+
+
+
+
+};
+
+
+
+let argument = "apples, pears # and bananas\ngrapes\nbananas !apples";
+let markers = ["#", "!"]
+
+console.log(solution(argument, markers));
+
+
+// result should == "apples, pears\ngrapes\nbananas"
+
+// ("Q @b\nu\ne -e f g", ["@", "-"], "Q\nu\ne")
+//("apples, plums % and bananas\npears\noranges !applesauce", ["%", "!"], "apples, plums\npears\noranges")
+
 
 
