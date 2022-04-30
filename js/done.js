@@ -1,20 +1,147 @@
+//*
 //? Вариант 1 МОЙ
+
 
 
 //? переработнанный мой с учетом инфы ниже
 
 
 //? Вариант 2  НЕ мой
+
+//*Улитка Учитывая n x nмассив, вернуть элементы массива, расположенные от самых внешних 
+//*элементов до среднего элемента, перемещаясь по часовой стрелке.
+//? Вариант 1 МОЙ
+let snaill = function (array) {
+
+	let result = [];
+	let rest = array;
+
+	function top(rest) {
+		result = result.concat(
+			...rest.splice(0, 1)
+		)
+	}
+	function right(rest) {
+		rest.forEach(
+			i => result = result.concat(
+				i.splice(-1, 1)
+			)
+		)
+	}
+	function down(rest) {
+		result = result.concat(
+			...rest
+				.splice(-1, 1)
+				.map(i => i.reverse())
+		)
+	}
+	function left(rest) {
+		rest
+			.reverse()
+			.forEach(
+				i => result = result.concat(
+					i.splice(0, 1)
+				)
+			)
+		rest.reverse();
+	}
+	while (rest.length > 0) {
+		if (rest.length > 0) top(rest);
+		if (rest.length > 0) right(rest);
+		if (rest.length > 0) down(rest);
+		if (rest.length > 0) left(rest);
+	}
+	return result;
+}
+
+
+
+//? переработнанный мой с учетом инфы ниже
+const ssnail = function (array) {
+
+	let result = [];
+	let rest = array;
+
+	while (array.length) {
+
+		result = result.concat(
+			...rest.shift(),
+			...rest.map(i => i.pop())
+		)
+
+		rest
+			.reverse()
+			.map(i => i.reverse());
+	}
+	return result;
+}
+
+
+//? Вариант 2  НЕ мой
+const snail = function (array) {
+	const list = [];
+
+	while (array.length) {
+		list.push(...array.shift(), ...array.map(row => row.pop()));
+
+		array.reverse().map(row => row.reverse());
+	}
+
+	return list;
+}
 
 //*Завершите решение так, чтобы оно удаляло весь текст, следующий за любым из переданных маркеров 
 //*комментариев. Все пробелы в конце строки также должны быть удалены.
 //? Вариант 1 МОЙ
+function solution(input, markers) {
+	let arrStr = input.split('\n');
+	let risult = [];
 
+	outer:
+	for (let str of arrStr) {
+		for (let m of markers) {
+			if (str.includes(m)) {
+				let back = str.split(m);
+				risult.push(back[0].trim());
+				continue outer;
+			}
+		}
+		risult.push(str.trim())
+	}
+	return risult.join('\n')
+
+};
 
 //? переработнанный мой с учетом инфы ниже
 
+function solution(input, markers) {
+	let arrStr = input.split('\n');
+	let risult = [];
+
+	outer:
+	for (let str of arrStr) {
+		for (let m of markers) {
+			if (str.includes(m)) {
+
+				risult.push(str.split(m)[0].trim());
+				continue outer;
+			}
+		}
+		risult.push(str.trim())
+	}
+	return risult.join('\n')
+
+};
+
 
 //? Вариант 2  НЕ мой
+function solution(input, markers) {
+	return input.split('\n').map(
+		line => markers.reduce(
+			(line, marker) => line.split(marker)[0].trim(), line
+		)
+	).join('\n')
+}
 
 
 //*Дан массив целых чисел, найдите то, которое встречается нечетное количество раз.
@@ -121,7 +248,7 @@ function validParentheses(parens) {
 	return n == 0;
 }
 
-//? Вариант 3 МОЙ НЕ МОЁ
+//? Вариант 3 НЕ МОЁ
 function validParentheses(parens) {
 	var indent = 0;
 	for (var i = 0; i < parens.length && indent >= 0; i++) {

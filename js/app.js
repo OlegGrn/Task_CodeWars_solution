@@ -1,32 +1,37 @@
 "use strict";
 
+const snail = function (array) {
+
+	let result = [];
+	let rest = array;
+
+	while (array.length) {
+
+		result = result.concat(
+			...rest.shift(),
+			...rest.map(i => i.pop())
+		)
+
+		rest
+			.reverse()
+			.map(i => i.reverse());
+	}
+	return result;
+}
 
 
-function solution(input, markers) {
-
-
-	return input.split('\n')
-		.map(function (sub, ind, arr) {
-
-		})
 
 
 
 
-};
 
+let array =
+	[[1, 2, 3, 4],
+	[5, 6, 7, 8],
+	[9, 10, 11, 12],
+	[13, 14, 15, 16]];
+//          [1,  2, 3,   6, 9, 8,   7, 4, 5]
 
-
-let argument = "apples, pears # and bananas\ngrapes\nbananas !apples";
-let markers = ["#", "!"]
-
-console.log(solution(argument, markers));
-
-
-// result should == "apples, pears\ngrapes\nbananas"
-
-// ("Q @b\nu\ne -e f g", ["@", "-"], "Q\nu\ne")
-//("apples, plums % and bananas\npears\noranges !applesauce", ["%", "!"], "apples, plums\npears\noranges")
-
+console.log(snail(array));
 
 
