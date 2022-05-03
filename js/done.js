@@ -8,6 +8,48 @@
 
 //? Вариант 2  НЕ мой
 
+//*Завершите функцию scramble(str1, str2), которая возвращает, true если часть str1 символов  
+//* можно переставить, чтобы они соответствовали str2, иначе возвращает false.
+//? Вариант 1 МОЙ
+function scramble(str1, str2) {
+
+	function obgStr(str) {
+		let obj = {};
+		for (const leter of str) {
+			if (obj[leter] === undefined) {
+				let reg = new RegExp(`${leter}`, 'g');
+				obj[leter] = str.match(reg).length;
+			}
+		}
+		return obj;
+	}
+
+	let list = obgStr(str1);
+	let word = obgStr(str2);
+	let risult = false;
+
+	outer:
+	while (!risult) {
+		for (let key in word) {
+			if (list[key] == undefined || word[key] > list[key]) break outer;
+		}
+		risult = true;
+	}
+	return risult;
+}
+
+
+
+//? переработнанный мой с учетом инфы ниже
+
+
+//? Вариант 2  НЕ мой
+
+function scramble(str1, str2) {
+	let occurences = str1.split("").reduce((arr, cur) => { arr[cur] ? arr[cur]++ : arr[cur] = 1; return arr; }, {});
+	return str2.split("").every((character) => --occurences[character] >= 0);
+}
+
 //*Улитка Учитывая n x nмассив, вернуть элементы массива, расположенные от самых внешних 
 //*элементов до среднего элемента, перемещаясь по часовой стрелке.
 //? Вариант 1 МОЙ

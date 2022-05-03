@@ -1,37 +1,18 @@
 "use strict";
 
-const snail = function (array) {
+function add(a, b) {
 
-	let result = [];
-	let rest = array;
-
-	while (array.length) {
-
-		result = result.concat(
-			...rest.shift(),
-			...rest.map(i => i.pop())
-		)
-
-		rest
-			.reverse()
-			.map(i => i.reverse());
-	}
-	return result;
+	let ris = (+ a + + b) // Fix me!
+	return ris
 }
 
+console.log(add('63829983432984289347293874', '90938498237058927340892374089'));
 
 
 
+//return (BigInt(a) + BigInt(b)).toString(); // Fix me!
 
 
 
-let array =
-	[[1, 2, 3, 4],
-	[5, 6, 7, 8],
-	[9, 10, 11, 12],
-	[13, 14, 15, 16]];
-//          [1,  2, 3,   6, 9, 8,   7, 4, 5]
-
-console.log(snail(array));
 
 
