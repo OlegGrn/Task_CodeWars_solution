@@ -8,6 +8,60 @@
 
 //? Вариант 2  НЕ мой
 
+//*В этом ката вы напишете функцию, которая возвращает позиции и значения «пиков» 
+//*(или локальных максимумов) числового массива.
+//? Вариант 1 МОЙ
+
+
+
+
+
+//? переработнанный мой с учетом инфы ниже
+
+
+//? Вариант 2  НЕ мой
+
+//* Калькулятор чисел для больших и малых
+//? Вариант 1 МОЙ
+function add(a, b) {
+
+	let arrA = [...a].reverse();
+	let arrB = [...b].reverse();
+
+	let arrBiger = (arrA.length > arrB.length) ? arrA : arrB;
+	let arrLitl = (arrA.length > arrB.length) ? arrB : arrA;
+
+	let one = 0;
+
+	return arrBiger.reduce((sumStr, item, index, arr) => {
+
+		let litl = (arrLitl[index] === undefined) ? 0 : arrLitl[index];
+
+		let sum = +item + +litl + one;
+
+		if (one > 0) one--;
+
+		if (sum < 10) {
+			return sumStr + sum;
+
+		} else if (sum >= 10 && index == arr.length - 1) {
+			return sumStr + sum.toString().split('').reverse().join('')
+
+		} else {
+			one++;
+			return sumStr + sum.toString().split('')[1]
+		}
+
+	}, "").split('').reverse().join('');
+}
+
+
+
+//? переработнанный мой с учетом инфы ниже
+
+
+//? Вариант 2  НЕ мой
+
 //*Завершите функцию scramble(str1, str2), которая возвращает, true если часть str1 символов  
 //* можно переставить, чтобы они соответствовали str2, иначе возвращает false.
 //? Вариант 1 МОЙ

@@ -1,46 +1,69 @@
 "use strict";
 
-function add(a, b) {
+function pickPeaks(arr) {
 
-	let arrA = [...a].reverse();
-	let arrB = [...b].reverse();
+	return arr.reduce((sum, num, i, arr) => {
 
-	let arrBiger = (arrA.length > arrB.length) ? arrA : arrB;
-	let arrLitl = (arrA.length > arrB.length) ? arrB : arrA;
+	   if (arr[--i] < num) {
+			if ( num == arr[ ++i]) {
+				let pos = i;
+				while (num == arr[pos]) pos++;
+				sum.pos.push(i);
+				sum.peaks.push(num);			
 
-	let one = 0;
+			}
+			
+		}		 
+			
+		return sum;	 	
+	}, {pos: [], peaks: []})
 
-	return arrBiger.reduce((sumStr, item, index, arr) => {
+	
+// 	if (item > arr[index - 1] && item > arr[index + 1]) {
+// 		result.pos.push(index);	  
+// 		result.peaks.push(item);		     
+// } else if (item > arr[index - 1] && item == arr[index + 1]) {
+// 	let pos = index + 1;
+// 	while(item == arr[pos]) {
+// 		pos++;
+// 	}
+	
+	
+// }
+	
 
-		let litl = (arrLitl[index] === undefined) ? 0 : arrLitl[index];
 
-		let sum = +item + +litl + one;
 
-		if (one > 0) one--;
 
-		if (sum < 10) {
-			return sumStr + sum;
 
-		} else if (sum >= 10 && index == arr.length - 1) {
-			return sumStr + sum.toString().split('').reverse().join('')
 
-		} else {
-			one++;
-			return sumStr + sum.toString().split('')[1]
-		}
-
-	}, "").split('').reverse().join('');
+	//return risult;
 }
 
 
-console.log(add("888", "222"));
-//  , "91002328220491911630239667963");
+let x = [1,2,3,6,4,1,2,3,2,1]; // {pos:[2], peaks:[3]});
+//[1,2,3,6,4,1,2,3,2,1]), {pos:[3,7], peaks:[6,3]});
+console.log(pickPeaks(x));
 
 
+// if (prev < item && item > next) {
+// 	risult.pos.push(index);
+// 	risult.peaks.push(item);
+// } else if (prev < item && item == next) {
+	
 
-//return (BigInt(a) + BigInt(b)).toString(); // Fix me!
-// 638
-// 909
+// 	console.log(folmax);
+// 	console.log(folmin);
+
+// }
+
+// outer:
+// 	for (let index = 0; index < arr.length - 1; index++) {
+// 		const item = arr[index];
+// 		let prev = arr[index - 1];
+// 		let next = arr[index + 1];
+// 	}
+
 
 
 
