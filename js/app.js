@@ -10,7 +10,7 @@ function add(a, b) {
 
 	let one = 0;
 
-	return arrBiger.reduce((sumStr, item, index) => {
+	return arrBiger.reduce((sumStr, item, index, arr) => {
 
 		let litl = (arrLitl[index] === undefined) ? 0 : arrLitl[index];
 
@@ -21,6 +21,9 @@ function add(a, b) {
 		if (sum < 10) {
 			return sumStr + sum;
 
+		} else if (sum >= 10 && index == arr.length - 1) {
+			return sumStr + sum.toString().split('').reverse().join('')
+
 		} else {
 			one++;
 			return sumStr + sum.toString().split('')[1]
@@ -30,7 +33,7 @@ function add(a, b) {
 }
 
 
-console.log(add('63829983432984289347293874', '90938498237058927340892374089'));
+console.log(add("888", "222"));
 //  , "91002328220491911630239667963");
 
 
