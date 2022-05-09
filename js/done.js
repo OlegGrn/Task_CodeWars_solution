@@ -6,28 +6,141 @@
 //? переработнанный мой с учетом инфы ниже
 
 
-//? Вариант 2  НЕ мой
+//? Вариант 2  НЕ мой 
 
-
-//*
+//*Есть секретная строка, которая вам неизвестна. Учитывая набор 
+//*случайных троек из строки, восстановить исходную строку.
 //? Вариант 1 МОЙ
-
 
 
 //? переработнанный мой с учетом инфы ниже
 
+
+//? Вариант 2  НЕ мой
+
+
+//* создать все перестановки непустой входной строки и удалить дубликаты, если они есть.
+//*  'ab' = return ['ab', 'ba']
+//? Вариант 1 МОЙ
+function permutations(list) {
+
+	let lst = Array.from(list);
+	let result = [];
+
+	if (lst.length === 1) return lst;
+
+	lst.forEach((item, ind) => {
+
+		let temp = permutations(lst.filter((subItem, z) => {
+			if (z != ind) return subItem;
+		}));
+		temp = temp.map(_set => [item, ..._set]);
+		result = [...result, ...temp]
+	});
+	return result
+		.map(item => item.join(''))
+		.filter((item, ind, arr) => arr.indexOf(item) == ind)
+}
+
+//? переработнанный мой с учетом инфы ниже
 
 //? Вариант 2  НЕ мой
 
 //* Общие знаменатели для массива чисел
 //? Вариант 1 МОЙ
 
+function nod(a, b) {
+	if (a == b) {
+		return a;
+	} else {
+		return nod((Math.max(a, b) - Math.min(a, b)), Math.min(a, b))
+	}
+}
 
+function nok(a, b) {
+	return (a * b) / nod(a, b);
+}
+
+function multiNok(...arg) {
+	let n = nok(arg[0], arg[1]);
+	for (let i = 1; i <= arg.length - 2; i++) {
+		n = nok(n, arg[i + 1]);
+	}
+	return n;
+}
+
+function convertFrac(lst) {
+
+	let arr = lst.map((item) => {
+		if (item[0] == 1) {
+			return item;
+		} else {
+			let x = nod(item[0], item[1]);
+			return [item[0] / x, item[1] / x];
+		}
+	})
+
+	let nokList = multiNok(...arr.reduce((list, item) => {
+		list.push(item[1]);
+		return list
+	}, []))
+
+	return arr
+		.map(item => [nokList / item[1] * item[0], nokList])
+		.reduce((str, item) => str += `(${item[0]},${item[1]})`, '')
+}
 
 //? переработнанный мой с учетом инфы ниже
+function nod(a, b) {
+	if (a == b) {
+		return a;
+	} else {
+		return nod((Math.max(a, b) - Math.min(a, b)), Math.min(a, b))
+	}
+}
+
+function nok(a, b) {
+	return (a * b) / nod(a, b);
+}
+
+function convertFrac(lst) {
+
+	let arr = lst.map((item) => {
+		if (item[0] == 1) {
+			return item;
+		} else {
+			let x = nod(item[0], item[1]);
+			return [item[0] / x, item[1] / x];
+		}
+	})
+
+	let nokList = arr.reduce((nk, item) => {
+		return nok(nk, item[1])
+	}, 1)
+
+	return arr
+		.map(item => [nokList / item[1] * item[0], nokList])
+		.reduce((str, item) => str += `(${item[0]},${item[1]})`, '')
+}
 
 
 //? Вариант 2  НЕ мой
+function gcd(a, b) {
+	return a < b ? gcd(b, a) : b == 0 ? a : gcd(b, a % b);
+}
+
+function lcm(a, b) {
+	return a * b / gcd(a, b);
+}
+
+function convertFrac(lst) {
+	var denom = lst.reduce(function (p, c) {
+		return lcm(p, c[1]);
+	}, 1);
+	return lst.map(function (v) {
+		return "(" + (v[0] * denom / v[1]) + "," + denom + ")";
+	}).join("");
+}
 
 //* Меморизированная фибоначи рукурсия
 //? Вариант 1 МОЙ
@@ -847,6 +960,45 @@ function printNumbers(from, to) {
 	}, 2000);
 }
 printNumbers(2, 5);
+
+//*перебор вариантов рекурсия РАЗНЫХ ЗАНЧЕНИЙ
+//*входящее значение МАССИВ
+
+function pern(lst) {
+	//let lst = Array.from(lsttt);//* либо деламем массив
+
+	let result = [];
+	if (lst.length === 1) return lst;
+
+	lst.forEach(item => {
+
+		let temp = pern(lst.filter(subItem => subItem != item));
+		temp = temp.map(_set => {
+			return [item, ..._set]
+		});
+		result = [...result, ...temp]
+	});
+
+	return result
+}
+//*перебор вариантов рекурсия ЗАНЧЕНИЯ могут быть ОДИНАКОВЫМИ
+//*входящее значение МАССИВ
+function pern(lst) {
+	let result = []
+
+	if (lst.length === 1) return [lst];
+
+	lst.forEach((item, ind) => {
+
+		let temp = pern(lst.filter((subItem, z) => {
+			if (z != ind) return subItem;
+		}));
+		temp = temp.map(_set => [item, ..._set]);
+		result = [...result, ...temp]
+	});
+
+	return result
+}
 
 
 
