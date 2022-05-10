@@ -16,8 +16,17 @@ function recoverSecret(triplets) {
 			.sort()
 			.reverse()
 			.slice(0, 1);
-
 		risult.unshift(a);
+
+		let test = triplets1
+			.filter((item) => item.includes(a))
+			.filter((e, i, ar) => {
+				if (ar[i - 1] !== undefined) {
+					return e.indexOf(a) > ar[i - 1].indexOf(a)
+				}
+			})
+		console.log(test);
+
 
 		let leter = triplets1.find(l => l.indexOf(a) == index)[index - 1];
 
