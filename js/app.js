@@ -2,44 +2,41 @@
 
 function recoverSecret(triplets) {
 
-	function sorting(a) {
-		let result = [];
-
+	function filt(ltr) {
+		return triplets1
+			.filter((item) => item.includes(ltr))
+			.reduce((max, el) => {
+				return (el.indexOf(ltr) >= max.indexOf(ltr)) ? el : max;
+			}, [`${ltr}`, 0, 0])
+			.filter((it, ind, arr) => ind == arr.indexOf(ltr) - 1);
 	}
 
-	let risult = [];
+	//let newLtr = filt('h');
+	// while (newLtr.length) console.log('ff');
 
-	function filt(a, i = 1) {
-		let log = triplets1.filter((item) => item.includes(a));
-		let index = log
-			.map(item => item.indexOf(a))
-			.sort()
-			.reverse()
-			.slice(0, 1);
-		risult.unshift(a);
+	// console.log(newLtr);
+	// console.log(...newLtr);
 
-		let test = triplets1
-			.filter((item) => item.includes(a))
-			.filter((e, i, ar) => {
-				if (ar[i - 1] !== undefined) {
-					return e.indexOf(a) > ar[i - 1].indexOf(a)
-				}
-			})
-		console.log(test);
+	let value = [];
 
+	triplets.forEach(item => {
+		item.forEach((e, u, y) => {
 
-		let leter = triplets1.find(l => l.indexOf(a) == index)[index - 1];
+			let result = [e];
+			let newLtr = filt(e);
 
-		console.log(leter); //***********
+			while (newLtr.length) {
+				result.unshift(...newLtr);
+				newLtr = filt(...newLtr)
+			}
 
-		return [leter, ...index]
-	}
+			value.push(...result);
 
+		})
 
-	console.log(filt('t'));
-	// console.log(filt('a'));
-	// console.log(filt('h'));
-	// console.log(filt('w'));
+	});
+
+	console.log(value);
 }
 
 
@@ -55,4 +52,36 @@ let triplets1 = [
 	['w', 'h', 's']
 ]
 //console.log(recoverSecret(triplets1));
+
 recoverSecret(triplets1);
+
+// let index = log
+// 			.map(item => item.indexOf(a))
+// 			.sort()
+// 			.reverse()
+// 			.slice(0, 1);
+
+// .filter((e, i, ar) => {
+		// 	if (ar.length > 1 && ar[i + 1]) {
+		// 		console.log(Math.max(e.indexOf(ltr), ar[i + 1].indexOf(ltr)));
+		// if (e.indexOf(ltr) > ar[i - 1].indexOf(ltr)) {
+		// 	return true
+		// }
+		// if (ar[i - 1] !== undefined) {
+		// 	return e.indexOf(ltr) > ar[i - 1].indexOf(ltr)
+		// }
+
+		// 	} else return true
+		// })
+		//.map(it => it[it.indexOf(ltr) - 1])
+
+		//   ['w', 'h', 'i'],
+		//   ['t', 'i', 's']
+
+
+
+		// .find((array) => {
+		// 	if (array.length > 0) {
+
+		// 	}
+		// })
