@@ -24,13 +24,32 @@
 //* [-6, -3, -2, -1, 0, 1, 3, 4, 5, 7, 8, 9, 10, 11, 14, 15, 17, 18, 19, 20])
 //*  "-6,-3-1,3-5,7-11,14,15,17-20")
 //? Вариант 1 МОЙ
+function solution(list) {
 
-
-
+	return list
+		.reduce((sum, item, index, arr) => {
+			if (item - arr[index - 1] == 1) {
+				sum[sum.length - 1].push(item)
+			} else sum.push([item]);
+			return sum
+		}, [])
+		.map(row => {
+			if (row.length > 2) {
+				return `${row[0]}-${row[row.length - 1]}`
+			} else return row
+		})
+		.join(',')
+}
 //? переработнанный мой с учетом инфы ниже
 
 
 //? Вариант 2  НЕ мой 
+solution = (list) => list.reduce((acc, curr, i) => {
+	if (i == 0) return curr.toString();
+	if (list[i - 1] == curr - 1 && list[i + 1] == curr + 1) return acc;
+	if (list[i - 2] == curr - 2 && list[i - 1] == curr - 1) return acc + "-" + curr;
+	return acc + "," + curr;
+});
 
 //*Есть секретная строка, которая вам неизвестна. Учитывая набор 
 //*случайных троек из строки, восстановить исходную строку.
