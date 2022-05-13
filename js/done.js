@@ -1,4 +1,28 @@
+
 //*
+//? Вариант 1 МОЙ
+
+
+
+//? переработнанный мой с учетом инфы ниже
+
+
+//? Вариант 2  НЕ мой
+
+//*
+//? Вариант 1 МОЙ
+
+
+
+//? переработнанный мой с учетом инфы ниже
+
+
+//? Вариант 2  НЕ мой
+
+//*Завершите решение так, чтобы оно принимало список целых чисел в порядке возрастания
+//* и возвращало правильно отформатированную строку в формате диапазона.
+//* [-6, -3, -2, -1, 0, 1, 3, 4, 5, 7, 8, 9, 10, 11, 14, 15, 17, 18, 19, 20])
+//*  "-6,-3-1,3-5,7-11,14,15,17-20")
 //? Вариант 1 МОЙ
 
 
@@ -11,12 +35,92 @@
 //*Есть секретная строка, которая вам неизвестна. Учитывая набор 
 //*случайных троек из строки, восстановить исходную строку.
 //? Вариант 1 МОЙ
+function firstLetter(arr) { // получаем первую букву
+	return arr
+		.map(item => item[0])
+		.filter(first => {
+			let pos = arr.reduce((index, row) => {
+				let _ind = 0
+				if (row.includes(first)) {
+					_ind = row.indexOf(first);
+				}
+				return index += _ind;
+			}, 0)
+			return pos == 0;
+		})[0];
+}
+
+function nextLetters(Letter, arr, word) {
+	let selectLetter = arr      //* получаем буквы идущие сразу же за Letter 
+		.filter(row => row.includes(Letter))
+		.map(item => {
+			if (item.indexOf(Letter) != 3) {
+				return item[item.indexOf(Letter) + 1]
+			}
+		})
+		.filter((_l, _i, _a) => _i == _a.indexOf(_l) && _l !== undefined)
+
+	if (selectLetter.length == 1) {
+		return selectLetter
+	} else {
+		return selectLetter.filter(item => {
+			return 0 == checkLetter(item, arr, word)
+		})
+	}
+
+	function checkLetter(char, arr, word) { //* 0 -ок, если > 0, буква не подходит (есть буквы перед ней, которых нет в массиве результатов word)
+		return arr
+			.filter(row => row.includes(char) && row.indexOf(char) > 0)
+			.map(item => item.slice(0, item.indexOf(char)))
+			.map(item => {
+				let num = item.reduce((sum, item) => {
+					if (!word.includes(item)) sum++;
+					return sum;
+				}, 0);
+				return num;
+			})
+			.reduce((sum, item) => sum += item) //*на выходе число 0 или >
+	}
+}
+
+function recoverSecret(triplets) {
+	let word = [];
+	let first = firstLetter(triplets);
+	word = word.concat(first);
+
+	let next = nextLetters(first, triplets, word);
+
+	while (next.length) {
+		word = word.concat(next);
+		next = nextLetters(...next, triplets, word);
+	}
+	return word.join('');
+}
+
+let triplets1 = [
+	['w', 'h', 'i'],
+	['t', 's', 'u'],
+	['a', 't', 's'],
+	['w', 'h', 's'],
+	['h', 'a', 'p'],
+	['t', 'i', 's'],
+	['t', 'u', 'p']
+]
 
 
 //? переработнанный мой с учетом инфы ниже
 
 
 //? Вариант 2  НЕ мой
+var recoverSecret = function (triplets) {
+	for (var [first] of triplets) {
+		if (triplets.every(tuple => tuple.indexOf(first) <= 0)) {
+			triplets.filter(([item]) => item == first).forEach(tuple => tuple.shift());
+			return first + recoverSecret(triplets.filter(tuple => tuple.length > 0));
+		}
+	}
+	return '';
+}
 
 
 //* создать все перестановки непустой входной строки и удалить дубликаты, если они есть.
