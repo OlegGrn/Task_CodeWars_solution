@@ -1,44 +1,32 @@
 "use strict";
 
-Array.prototype.sameStructureAs = function (other) {
+let worker = {
+	someMethod() {
+		return 1;
+	},
 
-	if (
-		Array.isArray(this) &&
-		Array.isArray(other) &&
-		this.every(item => Array.isArray(item) == false) &&
-		other.every(item => Array.isArray(item) == false)
-	) return this.length == other.length
-
-	outer:
-	for (let i = 0; i < Math.max(other.length, this.length); i++) {
-		if (
-			!Array.isArray(this[i]) &&
-			!Array.isArray(other[i])
-		) { continue }
-		else if (
-			(Array.isArray(this[i]) && !Array.isArray(other[i])) ||
-			(!Array.isArray(this[i]) && Array.isArray(other[i])) ||
-			other[i] === undefined ||
-			this[i] === undefined
-
-		) { break outer }
-
-		else return this[i].sameStructureAs(other[i]);
+	slow(x) {
+		// здесь может быть страшно тяжёлая задача для процессора
+		alert("Called with " + x);
+		return x * this.someMethod(); // (*)
 	}
-	return false;
 };
 
+// тот же код, что и выше
+function cachingDecorator(func) {
+	let cache = new Map();
+	return function (x) {
+		if (cache.has(x)) {
+			return cache.get(x);
+		}
+		let result = func(x); // (**)
+		cache.set(x, result);
+		return result;
+	};
+}
 
-// should return true
-// [ 1, 1, 1 ].sameStructureAs( [ 2, 2, 2 ] );          
-// [ 1, [ 1, 1 ] ].sameStructureAs( [ 2, [ 2, 2 ] ] ); 
+alert(worker.slow(1)); // оригинальный метод работает
 
-console.log([2, [1, 1], [1, 2]].sameStructureAs([3, [2, 1], [2, 2], 2]));
+worker.slow = cachingDecorator(worker.slow); // теперь сделаем его кеширующим
 
-
-// should return false 
-//  [ 1, [ 1, 1 ] ].sameStructureAs( [ [ 2, 2 ], 2 ] );  
-//  [ 1, [ 1, 1 ] ].sameStructureAs( [ [ 2 ], 2 ] ); 
-
-
-console.log([1, [1, 1]].sameStructureAs([[2], 2]));
+alert(worker.slow(2)); // Ой! Ошибка: не удаётся прочитать свойство 'someMethod' из 'undefined'

@@ -20,7 +20,9 @@
 
 //? Вариант 2  НЕ мой
 
-//*
+//*Напишите функцию, которая составляет список строк, представляющих все способы 
+//*балансировки nпар скобок
+//balancedParens(2) => ["()()","(())"]
 //? Вариант 1 МОЙ
 
 
@@ -34,6 +36,20 @@
 //*является массивом, который имеет те же структуры вложенности и ту же соответствующую длину
 //* вложенных массивов, что и первый массив.
 //? Вариант 1 МОЙ
+Array.prototype.sameStructureAs = function (other) {
+	if (other.length != this.length) return false;
+
+	for (let i = 0; i < this.length; i++) {
+
+		if (Array.isArray(this[i]) == false && Array.isArray(other[i]) == false) {
+			continue;
+		} else if (Array.isArray(this[i]) == Array.isArray(other[i]) &&
+			this[i].length === other[i].length) {
+			return this[i].sameStructureAs(other[i])
+		} else return false;
+	}
+	return true
+};
 
 
 
@@ -41,6 +57,11 @@
 
 
 //? Вариант 2  НЕ мой
+Array.prototype.sameStructureAs = function (other) {
+	return (this.length === other.length) ? this.every(function (el, i) {
+		return Array.isArray(el) ? el.sameStructureAs(other[i]) : true;
+	}) : false;
+};
 
 //*Завершите решение так, чтобы оно принимало список целых чисел в порядке возрастания
 //* и возвращало правильно отформатированную строку в формате диапазона.
