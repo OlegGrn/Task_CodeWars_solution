@@ -1,32 +1,39 @@
 "use strict";
 
-let worker = {
-	someMethod() {
-		return 1;
-	},
+function work(a, b) {
 
-	slow(x) {
-		// здесь может быть страшно тяжёлая задача для процессора
-		alert("Called with " + x);
-		return x * this.someMethod(); // (*)
-	}
-};
-
-// тот же код, что и выше
-function cachingDecorator(func) {
-	let cache = new Map();
-	return function (x) {
-		if (cache.has(x)) {
-			return cache.get(x);
-		}
-		let result = func(x); // (**)
-		cache.set(x, result);
-		return result;
-	};
+	console.log(a + b);
 }
 
-alert(worker.slow(1)); // оригинальный метод работает
 
-worker.slow = cachingDecorator(worker.slow); // теперь сделаем его кеширующим
 
-alert(worker.slow(2)); // Ой! Ошибка: не удаётся прочитать свойство 'someMethod' из 'undefined'
+function spy(func) {
+
+	let calls = [];
+
+
+	return function () {
+
+		let one = [].join.call(arguments).split(',');
+		calls.push(one);
+
+		console.log(calls);
+
+		return func(...arguments)
+	}
+}
+
+work = spy(work);
+
+work(2, 3);
+work(1, 2);
+work(1, 2);
+
+console.log(work.calls);
+
+
+// for (let args of work.calls) {
+// 	alert('call:' + args.join()); // "call:1,2", "call:4,5"
+// }
+
+

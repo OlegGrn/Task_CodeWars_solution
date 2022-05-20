@@ -35,7 +35,9 @@
 //*Завершите функцию/метод (в зависимости от языка), чтобы вернуть true/ True, когда ее аргумент 
 //*является массивом, который имеет те же структуры вложенности и ту же соответствующую длину
 //* вложенных массивов, что и первый массив.
+
 //? Вариант 1 МОЙ
+
 Array.prototype.sameStructureAs = function (other) {
 	if (other.length != this.length) return false;
 
@@ -43,8 +45,7 @@ Array.prototype.sameStructureAs = function (other) {
 
 		if (Array.isArray(this[i]) == false && Array.isArray(other[i]) == false) {
 			continue;
-		} else if (Array.isArray(this[i]) == Array.isArray(other[i]) &&
-			this[i].length === other[i].length) {
+		} else if (Array.isArray(this[i]) == Array.isArray(other[i])) {
 			return this[i].sameStructureAs(other[i])
 		} else return false;
 	}
