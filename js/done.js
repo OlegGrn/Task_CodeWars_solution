@@ -1179,8 +1179,94 @@ function pern(lst) {
 
 
 Function.prototype.defer = function (ms) {
+
 	setTimeout(this, ms);
 }
+
+//* Напишите функцию sum, которая бы работала следующим образом:
+// *   sum(1)(2)(3) == 6; // 1 + 2 + 3
+
+function sum(a) {
+
+	let allSum = a;
+
+	function func(b) {
+		allSum += b;
+		return func;
+	}
+
+	func.toString = function () {
+		return allSum;
+	}
+
+	return func;
+
+}
+//alert(sum(1)(2)(3));
+
+//* мы вызываем debounce, это гарантирует, что все остальные вызовы будут
+//*  игнорироваться в течение ms.
+
+function log(x) {
+	console.log(x)
+}
+
+function debounce(func, ms) {
+
+	let timer = true;
+
+	return function () {
+
+		if (!timer) return;
+		func.apply(this, arguments);
+		timer = false;
+		setTimeout(() => timer = true, ms);
+	}
+}
+let func = debounce(log, 2000);
+
+// func(3);
+// func(4);
+// setTimeout(() => func(5), 2500) 
+
+
+//* Тормозящий (throttling) декоратор 
+//*Отличие от debounce – если проигнорированный вызов является последним во 
+//*время «задержки», то он выполняется в конце.
+
+function throttle(func, ms) {
+
+	let value = 0;
+	let timer = true;
+
+	function wrapper() {
+
+		value = arguments;
+
+		if (!timer) return;
+
+		func.apply(this, arguments);
+		timer = false;
+
+
+		setTimeout(() => {
+			timer = true;
+			if (value) {
+				wrapper.apply(this, value);
+				value = null;
+			}
+		}, ms);
+	}
+
+	return wrapper;
+}
+let f2000 = throttle(log, 2000);
+
+// f2000(2);
+// f2000(3);
+// f2000(4);
+// f2000(5);
+// f2000(6);
 
 
 
