@@ -24,6 +24,10 @@
 //*балансировки nпар скобок
 //balancedParens(2) => ["()()","(())"]
 //? Вариант 1 МОЙ
+//! не решил!!!!
+//* 1. получаю все возможные комбинации 2. фильтрую верные и убираю дубликаты
+
+
 
 
 
@@ -31,6 +35,13 @@
 
 
 //? Вариант 2  НЕ мой
+function balancedParens(n, match = 0, str = '', res = []) {
+	if (n) balancedParens(n - 1, match + 1, str + '(', res);
+	if (match) balancedParens(n, match - 1, str + ')', res);
+	if (!n && !match) res.push(str);
+	return res;
+}
+
 
 //*Завершите функцию/метод (в зависимости от языка), чтобы вернуть true/ True, когда ее аргумент 
 //*является массивом, который имеет те же структуры вложенности и ту же соответствующую длину
@@ -213,6 +224,21 @@ function permutations(list) {
 //? переработнанный мой с учетом инфы ниже
 
 //? Вариант 2  НЕ мой
+//!принимает массив
+function permutations(arr) {
+	let perms = arr.reduce((acc, element) => {
+		let updatedPerms = new Set();
+		acc.forEach((word) => {
+			for (let i = 0; i <= word.length; i++) {
+				updatedPerms.add(word.substring(0, i) + element + word.substring(i));
+			}
+		});
+		return updatedPerms;
+	}, new Set(['']));
+	return [...perms];
+}
+
+
 
 //* Общие знаменатели для массива чисел
 //? Вариант 1 МОЙ
