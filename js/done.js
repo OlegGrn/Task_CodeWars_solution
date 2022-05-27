@@ -9,8 +9,7 @@
 
 //? Вариант 2  НЕ мой
 
-//*
-
+//*заменить каждую букву ее позицией в алфавите.
 //? Вариант 1 МОЙ
 
 
@@ -19,6 +18,42 @@
 
 
 //? Вариант 2  НЕ мой
+
+//* написать функцию, printer_errorкоторая по заданной строке будет возвращать частоту ошибок 
+//* принтера в виде строки Test.assertEquals(printerError(s), "3/56") 
+//? Вариант 1 МОЙ
+function printerError(s) {
+	let erors = s.split('').reduce((sum, item) => {
+		if (item > 'm') sum += item;
+		return sum;
+	}, '');
+	return `${erors.length}/${s.length}`
+}
+
+
+//* Последовательность Трибоначчи
+//? Вариант 1 МОЙ
+function tribonacci(signature, n) {
+	if (n < 4) return signature.filter((el, ind) => ind < n);
+
+	let result = signature;
+
+	for (let i = 4; i <= n; i++) {
+		result.push(result[i - 4] + result[i - 3] + result[i - 2]);
+	}
+	return result;
+}
+//? переработнанный мой с учетом инфы ниже
+function tribonacci(signature, n) {
+	let result = signature;
+
+	for (let i = 4; i <= n; i++) {
+		result.push(result[i - 4] + result[i - 3] + result[i - 2]);
+	}
+	return result.splice(0, n);
+}
+
+
 
 //*Напишите функцию, которая составляет список строк, представляющих все способы 
 //*балансировки nпар скобок
