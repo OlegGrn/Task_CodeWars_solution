@@ -1,22 +1,19 @@
 "use strict";
 
-
-function f(a, b) {
-	alert(a + b);
+var countDeafRats = function (town) {
+	// Your code here
+	return 0;
 }
 
-Function.prototype.defer = function (ms) {
 
-	let func = this;
 
-	return function () {
 
-		setTimeout(() => func.apply(null, arguments), ms)
 
-	}
-};
+console.log(countDeafRats("~O~O~O~OP~O~OO~"));
 
-f.defer(2000)(1, 2); // выведет 3 через 1 секунду.
+
+
+
 
 
 
