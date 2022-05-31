@@ -1,16 +1,71 @@
 
-//*
+//* Посчитать рукопожатия
 //? Вариант 1 МОЙ
+function getParticipants(handshakes) {
 
+	let countHandshakes = (men) => (men <= 1) ? 0 : (men - 1) + countHandshakes(men - 1);
 
+	let count = 0;
+	let men = 0;
 
+	do {
+		men++;
+		count = countHandshakes(men);
+	} while (count < handshakes)
+
+	return (handshakes == 0) ? handshakes : men;
+}
 //? переработнанный мой с учетом инфы ниже
 
 
 //? Вариант 2  НЕ мой
+function getParticipants(handshakes) {
+	let farmers = 0
+	while (handshakes > farmers * (farmers - 1) / 2) {
+		farmers++
+	}
+	return farmers
+}
 
-//*заменить каждую букву ее позицией в алфавите.
+//*Крысолов Легенда  Пример  ~O~O~O~OP~O~OO~имеет 2 глухих крысы
+/*P= Крысолов
+O~= Крыса идет налево
+~O= Крыса идет вправо
+*/
 //? Вариант 1 МОЙ
+var countDeafRats = function (town) {
+
+	let result = 0;
+	let start = town.indexOf('P');
+	let arrTown = town.split("");
+
+	arrTown
+		.slice(start + 1)
+		.reduce((sum, item) => {
+			if (item == "O") {
+				sum++
+			} else if (item == "~") {
+				sum--
+			}
+			if (sum < 0) result++;
+			return sum
+		}, 0);
+
+	arrTown
+		.slice(0, start)
+		.reduceRight((sum, item) => {
+			if (item == "O") {
+				sum++
+			} else if (item == "~") {
+				sum--
+			}
+			if (sum < 0) result++;
+			return sum
+		}, 0);
+
+	return result
+
+}
 
 
 

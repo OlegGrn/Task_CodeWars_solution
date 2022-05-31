@@ -1,41 +1,54 @@
 "use strict";
 
-var countDeafRats = function (town) {
 
-	let result = 0;
-	let start = town.indexOf('P');
-	let arrTown = town.split("");
+function Clock(template) {
 
-	let right = arrTown.slice(start + 1).reduce((sum, item) => {
-		(item == "O") ? sum++ : sum--;
-		if (sum < 0) result++;
-		return sum
-	}, 0)
+	let timer;
 
-	let left = arrTown.slice(0, start).reduceRight((sum, item) => {
-		(item == "O") ? sum++ : sum--;
-		if (sum < 0) result++;
-		return sum
-	}, 0)
+	function render() {
+		let date = new Date();
 
-	return result
+		let hours = date.getHours();
+		if (hours < 10) hours = '0' + hours;
+
+		let mins = date.getMinutes();
+		if (mins < 10) mins = '0' + mins;
+
+		let secs = date.getSeconds();
+		if (secs < 10) secs = '0' + secs;
+
+		let output = template
+			.replace('h', hours)
+			.replace('m', mins)
+			.replace('s', secs);
+
+		console.log(output);
+	}
+
+	this.stop = function () {
+		clearInterval(timer);
+	};
+
+	this.start = function () {
+		render();
+		timer = setInterval(render, 1000);
+	};
 
 }
 
+let clock = new Clock('h:m:s');
+
+console.log(clock);
 
 
 
 
-console.log(countDeafRats("O~~OPO~O~~O~O"));
+// class Clock {
 
+// 	constructor(template) {
 
-
-
-
-
-
-
-
+// 	}
+// }
 
 
 
