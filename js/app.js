@@ -1,25 +1,22 @@
 "use strict";
 
-function towerBuilder(nFloors) {
 
-	let result = [];
-	let max = nFloors * 2 - 1;
+let x = new Date(0);
 
-	let n = 1;
-	do {
-		let center = 2 * n - 1;
-		let aside = (max - center) / 2;
-		result.push(' '.repeat(aside) + "*".repeat(center) + ' '.repeat(aside));
-		n++
-	} while (n <= nFloors)
+console.log(x);
 
-	return result
+let b = new Date(70 / 130 * 3600 * 1000);
+console.log(b);
+console.log(b.getTimezoneOffset() / 60 + b.getHours());
+console.log(b.getMinutes());
+console.log(b.getSeconds());
 
 
+console.log(b - x);
 
-}
+let d = x.setHours((70 / 130 * 3600 * 1000));
+console.log(b.getTimezoneOffset() / 60);
 
-console.log(towerBuilder(4));
 
 
 
