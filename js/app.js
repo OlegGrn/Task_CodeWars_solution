@@ -1,36 +1,56 @@
 "use strict";
 
+function addUsername(list) {
 
-let x = new Date(0);
+	let now = new Date();
 
-console.log(x);
+	return list.map(user => {
+		let username = user.firstName.toLowerCase()
+			+ user.lastName[0].toLowerCase()
+			+ (now.getFullYear() - user.age);
+		user.username = username;
+		return user
+	})
 
-let b = new Date(70 / 130 * 3600 * 1000);
-console.log(b);
-console.log(b.getTimezoneOffset() / 60 + b.getHours());
-console.log(b.getMinutes());
-console.log(b.getSeconds());
-
-
-console.log(b - x);
-
-let d = x.setHours((70 / 130 * 3600 * 1000));
-console.log(b.getTimezoneOffset() / 60);
+}
 
 
 
 
 
+let list1 = [
+	{ firstName: 'Emily', lastName: 'N.', country: 'Ireland', continent: 'Europe', age: 30, language: 'Ruby' },
+	{ firstName: 'Nor', lastName: 'E.', country: 'Malaysia', continent: 'Asia', age: 20, language: 'Clojure' }
+];
+
+
+let solution = [
+	{
+		firstName: 'Emily', lastName: 'N.', country: 'Ireland', continent: 'Europe', age: 30, language: 'Ruby',
+		username: 'emilyn1990'
+	},
+	{
+		firstName: 'Nor', lastName: 'E.', country: 'Malaysia', continent: 'Asia', age: 20, language: 'Clojure',
+		username: 'nore2000'
+	}
+]
+
+console.log(addUsername(list1));
 
 /*
-let result = [];
-	let n = 1;
+[1, 3, 5, 7]
+a, b, c, d, e
+1, 2, 3, 4, 5
+f, g, h, i, j
 
-	do {
-		result.push("*".repeat(2 * n - 1))
-		n++
-	} while (n <= nFloors)
 
-	return result
-	*/
+b, d
+2, 4
+g, i
 
+1
+2
+3
+4
+5
+*/
