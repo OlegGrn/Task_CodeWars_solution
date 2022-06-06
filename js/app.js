@@ -1,56 +1,23 @@
 "use strict";
 
-function addUsername(list) {
-
-	let now = new Date();
-
-	return list.map(user => {
-		let username = user.firstName.toLowerCase()
-			+ user.lastName[0].toLowerCase()
-			+ (now.getFullYear() - user.age);
-		user.username = username;
-		return user
-	})
-
+function csvColumns(csv, indices) {
+	return csv
+		.split('\n')
+		.map(item => item
+			.split(",")
+			.filter((_, index) => indices.includes(index)))
+		.join("\n")
+		.trim()
 }
 
 
 
 
 
-let list1 = [
-	{ firstName: 'Emily', lastName: 'N.', country: 'Ireland', continent: 'Europe', age: 30, language: 'Ruby' },
-	{ firstName: 'Nor', lastName: 'E.', country: 'Malaysia', continent: 'Asia', age: 20, language: 'Clojure' }
-];
+let csv = "0a,1b,2c,3d,4e\n01,12,23,34,45\n0f,1g,2h,3i,4j";
 
 
-let solution = [
-	{
-		firstName: 'Emily', lastName: 'N.', country: 'Ireland', continent: 'Europe', age: 30, language: 'Ruby',
-		username: 'emilyn1990'
-	},
-	{
-		firstName: 'Nor', lastName: 'E.', country: 'Malaysia', continent: 'Asia', age: 20, language: 'Clojure',
-		username: 'nore2000'
-	}
-]
+let indices = [5, 7];
 
-console.log(addUsername(list1));
+console.log(csvColumns(csv, indices));
 
-/*
-[1, 3, 5, 7]
-a, b, c, d, e
-1, 2, 3, 4, 5
-f, g, h, i, j
-
-
-b, d
-2, 4
-g, i
-
-1
-2
-3
-4
-5
-*/

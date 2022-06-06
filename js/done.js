@@ -1,3 +1,68 @@
+//* 
+//? Вариант 1 МОЙ
+
+//? переработнанный МОЙ с учетом инфы ниже
+
+//? Вариант 2  НЕ мой
+
+//* 
+//? Вариант 1 МОЙ
+
+//? переработнанный МОЙ с учетом инфы ниже
+
+//? Вариант 2  НЕ мой
+
+//* 
+//? Вариант 1 МОЙ
+
+//? переработнанный МОЙ с учетом инфы ниже
+
+//? Вариант 2  НЕ мой
+
+//* Пример формата переданного в CSV:"1,2,3\n4,5,6\n7,8,9\n10,11,12"
+//*  csvColumns("1,2,3\n4,5,6", [0, 1]) => "1,2\n4,5"
+//? Вариант 1 МОЙ
+function csvColumns(csv, indices) {
+	return csv
+		.replace(/\n/g, ',\n,')
+		.split(',')
+		.reduce((sum, item) => {
+			if (item == '\n') {
+				sum.index = -1;
+				if (sum.result.length > 0) sum.result += '\n';
+				return sum
+			} else {
+				sum.index += 1
+			}
+			if (indices.includes(sum.index)) {
+				if (sum.result.indexOf('\n', sum.result.length - 1) == -1 && sum.result.length > 0) {
+					sum.result += ","
+				}
+				sum.result = sum.result + item
+			}
+			return sum;
+		}, { result: "", index: -1 })
+		.result
+}
+
+//? переработнанный МОЙ с учетом инфы ниже
+function csvColumns(csv, indices) {
+	return csv
+		.split('\n')
+		.map(item => item
+			.split(",")
+			.filter((_, index) => indices.includes(index)))
+		.join("\n")
+		.trim()
+}
+
+//? Вариант 2  НЕ мой
+function csvColumns(csv, indices) {
+	return csv.split('\n')
+		.map(row => row.split(',').filter((_, i) => indices.includes(i)).join(','))
+		.join('\n')
+		.trim();
+}
 
 //* Посчитать рукопожатия
 //? Вариант 1 МОЙ
