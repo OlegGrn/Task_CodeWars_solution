@@ -1,7 +1,22 @@
 "use strict";
 
 function longestConsec(strarr, k) {
-	// your code
+
+	return strarr
+		.reduce((sum, item, index, arr) => {
+
+			if (index < (arr.length - k - 1)) {
+
+				let curentSum = 0;
+				for (let i = 0; i <= k; i++) {
+					curentSum += arr[index + i].length;
+				}
+				console.log(curentSum);
+			}
+
+			return sum
+		}, { result: 'упс', length: 0 })
+		.result
 }
 
 
@@ -9,7 +24,7 @@ function longestConsec(strarr, k) {
 
 
 
-let strarr = ["tree", "foling", "trashy", "blue", "abcdef", "uvwxyz"];
+let strarr = ["reew", "foling", "trashy", "blue", "abcdef", "uvwxyz"];
 let k = 2;
 
 console.log(longestConsec(strarr, k));
