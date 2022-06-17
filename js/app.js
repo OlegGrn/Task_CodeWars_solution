@@ -1,7 +1,7 @@
 "use strict";
 
-function high(x) {
-
+function longestConsec(strarr, k) {
+	// your code
 }
 
 
@@ -9,6 +9,8 @@ function high(x) {
 
 
 
+let strarr = ["tree", "foling", "trashy", "blue", "abcdef", "uvwxyz"];
+let k = 2;
 
-console.log(high('man i need a taxi up to ubud'));
+console.log(longestConsec(strarr, k));
 
