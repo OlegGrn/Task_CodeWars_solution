@@ -5,15 +5,48 @@
 
 //? Вариант 2  НЕ мой
 
-//* 
+//* Панаграмма строка или нет?
 //? Вариант 1 МОЙ
+function isPangram(string) {
+	return string
+		.toLowerCase()
+		.split('')
+		.reduce((sum, item) => {
+			if (item.charCodeAt(0) > 96 && item.charCodeAt(0) < 123 && sum.includes(item) == false) {
+				sum.push(item)
+			}
+			return sum
+		}, []).length == 26
+}
 
 //? переработнанный МОЙ с учетом инфы ниже
 
 //? Вариант 2  НЕ мой
 
-//* 
+//* Вам дан массив (список) strarrстрок и целое число k. Ваша задача — вернуть первую самую длинную строку, 
+//* состоящую из k последовательных строк, взятых в массиве.
 //? Вариант 1 МОЙ
+function longestConsec(strarr, k) {
+	return strarr
+		.reduce((sum, _, index, arr) => {
+			if (index <= (arr.length - k)) {
+				let curentlength = 0;
+				let curentResult = "";
+				for (let i = 0; i < k; i++) {
+					curentlength += arr[index + i].length;
+					curentResult += arr[index + i];
+				}
+				if (curentlength > sum.length) {
+					sum.length = curentlength;
+					sum.result = curentResult;
+				}
+			}
+			return sum
+		}, { result: '', length: 0 })
+		.result
+}
+let strarr = ["reew", "foling", "trashy"];
+let k = 1;
 
 //? переработнанный МОЙ с учетом инфы ниже
 
