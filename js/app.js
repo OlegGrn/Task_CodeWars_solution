@@ -1,13 +1,10 @@
 "use strict";
 
-function getSum(a, b) {
 
-	return (a === b) ? a : getSum(Math.min(a, b), Math.max(a, b) - 1) + Math.max(a, b)
-
-	// if (a === b) return a;
-	// return getSum(Math.min(a, b), Math.max(a, b) - 1) + Math.max(a, b)
+function solution(str, ending) {
 
 
+	return (ending === "") ? true : str.split(ending).includes("", -1)
 }
 
 
@@ -17,6 +14,6 @@ function getSum(a, b) {
 
 
 
-console.log(getSum(0, -1));
+console.log(solution('abc', 'b'));
 
 
