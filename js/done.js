@@ -167,8 +167,20 @@
 
 //? Вариант 2  НЕ мой
 
-//* 
+//* является ли число простым (с небольшой оптимизацией под большие числа) 
 //? Вариант 1 МОЙ
+function isPrime(num) {
+
+	if (num <= 1) return false;
+	if (num === 2 || num === 3) return true;
+	if (num % 2 === 0) return false;
+
+	for (let i = 3; i <= (num ** (1 / 2)); i++) {
+		if ((num % i) === 0) return false;
+		i++;
+	}
+	return true;
+}
 
 //? переработнанный МОЙ с учетом инфы ниже
 
