@@ -1,20 +1,17 @@
 "use strict";
 
+function expandedForm(num) {
 
-function isPrime(num) {
+	return String(num)
+		.split("")
 
-	if (num <= 1) return false;
-	if (num === 2 || num === 3) return true;
-	if (num % 2 === 0) return false;
-
-	for (let i = 3; i <= (num ** (1 / 2)); i++) {
-		if ((num % i) === 0) return false;
-		i++;
-	}
-	return true;
 }
 
-console.log(isPrime(71));
+console.log(expandedForm(123));
+
+
+
+
 
 
 
