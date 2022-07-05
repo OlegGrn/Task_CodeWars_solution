@@ -1,4 +1,3 @@
-
 //* 
 //? Вариант 1 МОЙ
 
@@ -6,12 +5,28 @@
 
 //? Вариант 2  НЕ мой
 
+//* развернуть массив не используя reverse() и код должен быть как можно короче, не более 28 символов.
+//? Вариант 1 МОЙ
+let weirdReverse = a => a.sort(n => 1);
+// ещё вариант на 30 символов
+let weirdRevers = a => [...a].map(a.pop, a);
+
 //* Вам будет дано число, и вам нужно будет вернуть его в виде строки в расширенной форме .
 //? Вариант 1 МОЙ
+function expandedForm(num) {
+	let numStr = String(num);
+	let result = '';
+	for (let i = 0; i < numStr.length; i++) {
+		let curentNum = numStr[i];
+		if (curentNum == '0') continue;
 
-//? переработнанный МОЙ с учетом инфы ниже
-
-//? Вариант 2  НЕ мой
+		for (let n = i; n < numStr.length - 1; n++) {
+			curentNum += "0";
+		}
+		result = `${result} + ${curentNum}`
+	}
+	return result.slice(2).trim()
+}
 
 //* максимальная сумма диапазона
 //? Вариант 1 МОЙ
@@ -990,7 +1005,7 @@ function solution(number) {
 	}
 	return rimnumberer.join('');
 }
-// не моё решение
+//* не моё решение
 function solution(number) {
 	// convert the number to a roman numeral
 	let roman = { M: 1000, CM: 900, D: 500, CD: 400, C: 100, XC: 90, L: 50, XL: 40, X: 10, IX: 9, V: 5, IV: 4, I: 1 }

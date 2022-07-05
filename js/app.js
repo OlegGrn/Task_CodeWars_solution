@@ -1,13 +1,11 @@
 "use strict";
 
-function expandedForm(num) {
+//let weirdReverse = a => a.reverse()
+//weirdReverse=a=>a.map((_,i,b)=>b[b.length-++i])
 
-	return String(num)
-		.split("")
+let weirdReverse = a => [...a].map(a.pop, a);
 
-}
-
-console.log(expandedForm(123));
+console.log(weirdReverse([1, 2, 3, 4, 5]));
 
 
 
