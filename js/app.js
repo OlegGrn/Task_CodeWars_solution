@@ -1,11 +1,24 @@
 "use strict";
 
-//let weirdReverse = a => a.reverse()
-//weirdReverse=a=>a.map((_,i,b)=>b[b.length-++i])
+function luckCheck(ticket) {
+	let arrTicket = ticket.split("");
+	let midl = Math.floor(arrTicket.length / 2);
+	let result = arrTicket.reduce((sum, item, ind) => {
+		if (ind < midl) {
+			sum.left += +item;
+		} else if (ind < (arrTicket.length - ind)) {
+			return sum
+		} else {
+			sum.right += +item;
+		}
+		return sum
+	}, { "left": 0, "right": 0 });
+	return result.left == result.right;
+}
 
-let weirdReverse = a => [...a].map(a.pop, a);
 
-console.log(weirdReverse([1, 2, 3, 4, 5]));
+
+console.log(luckCheck('6363'));
 
 
 

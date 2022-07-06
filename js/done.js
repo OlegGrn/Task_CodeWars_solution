@@ -1,9 +1,52 @@
+
 //* 
 //? Вариант 1 МОЙ
 
 //? переработнанный МОЙ с учетом инфы ниже
 
 //? Вариант 2  НЕ мой
+
+//* написать функцию, которая возвращает, true/Trueесли аргумент является строковым десятичным 
+//*представлением номера счастливого билета или false/Falseвсех остальных чисел.
+//* Он должен выдавать ошибки для пустых строк или строк, которые не представляют десятичное число
+//? Вариант 1 МОЙ
+function luckCheck(ticket) {
+	let arrTicket = ticket.split("");
+	let midl = Math.floor(arrTicket.length / 2);
+	let result = arrTicket.reduce((sum, item, ind) => {
+		if (ind < midl) {
+			sum.left += +item;
+		} else if (ind < (arrTicket.length - ind)) {
+			return sum
+		} else {
+			sum.right += +item;
+		}
+		return sum
+	}, { "left": 0, "right": 0 });
+	return result.left == result.right;
+}
+
+
+//? переработнанный МОЙ с учетом инфы ниже
+
+//? Вариант 2  НЕ мой
+
+//* Напишите алгоритм, который берет массив и перемещает все нули в 
+//*конец, сохраняя порядок остальных элементов.
+//? Вариант 1 МОЙ
+function moveZeros(arr) {
+	return arr.sort(
+		(a, b) => {
+			if (a !== 0 && b !== 0) return 0;
+			if (a === 0 && b !== 0) return 1;
+			if (a !== 0 && b === 0) return -1;
+		}
+	)
+}
+//? Вариант 2  НЕ мой
+function moveZeros(arr) {
+	return arr.sort((a, b) => b === 0 ? -1 : 0);
+}
 
 //* развернуть массив не используя reverse() и код должен быть как можно короче, не более 28 символов.
 //? Вариант 1 МОЙ
