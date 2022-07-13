@@ -1,11 +1,39 @@
 
-
 //* 
 //? Вариант 1 МОЙ
 
 //? переработнанный МОЙ с учетом инфы ниже
 
 //? Вариант 2  НЕ мой
+
+//* Напишите функцию, которая принимает неотрицательное целое число (секунды) 
+//* в качестве входных данных и возвращает время в удобочитаемом формате ( HH:MM:SS)
+//? Вариант 1 МОЙ
+function humanReadable(seconds) {
+	let data = new Date((seconds * 1000));
+	let objData = {
+		"hours": `${(data.getUTCDate() - 1) * 24 + (data.getUTCHours())}`.padStart(2, 0),
+		"min": `${data.getMinutes()}`.padStart(2, 0),
+		"sec": `${data.getSeconds()}`.padStart(2, 0),
+	}
+	return `${objData.hours}:${objData.min}:${objData.sec}`
+}
+
+
+//? Вариант 2  НЕ мой
+const humanReadable = sec => {
+	let hours = Math.floor(sec / 3600);
+	let minutes = Math.floor(sec % 3600 / 60);
+	let seconds = Math.floor(sec % 3600 % 60);
+	let result = `${timeFormat(hours)}:${timeFormat(minutes)}:${timeFormat(seconds)}`
+	return result;
+}
+
+const timeFormat = s => {
+	if (s === 0) { return '00' }
+	else if (s < 10) { return '0' + s }
+	else { return s }
+}
 
 //* Создайте функцию, которая принимает строку и возвращает строку, зашифрованную с помощью Rot13. 
 //* Если в строку включены числа или специальные символы, они должны быть возвращены как есть. 
