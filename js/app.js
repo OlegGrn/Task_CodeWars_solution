@@ -2,16 +2,18 @@
 
 
 var lastDigit = function (str1, str2) {
-
-	console.log(BigInt(str1) ** BigInt(str2));
-
-
-	return +`${BigInt(str1) ** BigInt(str2)}`.slice(-1)
+	if (str2 == 0) return 1;
+	let lastNumBase = +str1.slice(-1);
+	if (lastNumBase === 1 || lastNumBase === 5 || lastNumBase === 0) return lastNumBase;
+	let restPow = Number(BigInt(str2) % BigInt(4));
+	if (restPow !== 0) return +`${Math.pow(lastNumBase, restPow)}`.slice(-1);
+	let evenOrOdd = (lastNumBase % 2 === 0) ? true : false;
+	if (evenOrOdd) return 6;
+	return 1;
 }
 
 
-console.log(lastDigit("345678901234567890123456789012345", "23456789012345678"));
-
+console.log(lastDigit("9", "7"));
 
 
 
