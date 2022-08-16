@@ -1,9 +1,53 @@
+
+
 //* 
 //? Вариант 1 МОЙ
 
 //? переработнанный МОЙ с учетом инфы ниже
 
 //? Вариант 2  НЕ мой
+
+//* 
+//? Вариант 1 МОЙ
+
+//? переработнанный МОЙ с учетом инфы ниже
+
+//? Вариант 2  НЕ мой
+
+//*Создайте декоратор delay(f, ms), который задерживает каждый вызов f на ms миллисекунд.
+//? Вариант 1 МОЙ
+function f(x) {
+	console.log(x);
+}
+
+function delay(func, ms) {
+	return function () {
+		return setTimeout(() => { func.apply(this, arguments) }, ms)
+	}
+}
+// let f2000 = delay(f, 2000);
+// f2000("test");
+
+//* Создайте декоратор spy(func), который должен возвращать обёртку, 
+//* которая сохраняет все вызовы функции в своём свойстве calls.
+//* Каждый вызов должен сохраняться как массив аргументов.
+//? Вариант 1 МОЙ
+function work(a, b) {
+	console.log(a + b); // произвольная функция или метод
+}
+
+function spy(func) {
+	function spyFunc() {
+		spyFunc.calls.push([...arguments]);
+		return func.apply(this, arguments);
+	}
+	spyFunc.calls = [];
+	return spyFunc;
+}
+// work = spy(work);
+// work(2, 5);
+
+
 
 //* Создайте функцию topSalary(salaries), которая возвращает имя самого высокооплачиваемого сотрудника.
 //*Если объект salaries пустой, то нужно вернуть null.
