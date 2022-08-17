@@ -7,12 +7,90 @@
 
 //? Вариант 2  НЕ мой
 
-//* 
+
+//* Напишите функцию sum, которая бы работала следующим образом:
+//* sum(1)(2)(3) == 6; // 1 + 2 + 3
+//* sum(0)(1)(2)(3)(4)(5) == 15
 //? Вариант 1 МОЙ
+function sum(a) {
+	let result = a;
 
-//? переработнанный МОЙ с учетом инфы ниже
+	function wrapper(b) {
+		result += b;
+		return wrapper;
+	}
 
-//? Вариант 2  НЕ мой
+	wrapper.toString = function () {
+		return result;
+	}
+	return wrapper;
+}
+
+
+
+//* Создайте «тормозящий» декоратор throttle(f, ms), который возвращает обёртку, передавая 
+//*вызов в f не более одного раза в ms миллисекунд. Те вызовы, которые попадают в период «торможения»,
+//* игнорируются.
+//* Отличие от debounce – если проигнорированный вызов является последним во время «задержки»,
+//* то он выполняется в конце.
+//? Вариант 1 МОЙ
+function f(x) {
+	console.log(x);
+}
+
+function throttle(f, ms) {
+	let call = true;
+	function wrapper() {
+		wrapper.calls.push(...arguments);
+		if (!call) return;
+
+		f.call(this, wrapper.calls.pop());
+		call = false;
+
+		setTimeout(() => {
+			call = true;
+			if (wrapper.calls.length > 0) {
+				wrapper();
+				wrapper.calls = []
+			}
+		}, ms)
+	}
+	wrapper.calls = [];
+	return wrapper;
+}
+
+// let f1500 = throttle(f, 1500);
+
+// f1500(1);
+// f1500(2);
+// f1500(3);
+// f1500(4);
+// f1500(5);
+// setTimeout(() => f1500(8), 2000)
+// setTimeout(() => f1500(9), 2200)
+
+//* Результатом декоратора debounce(f, ms) должна быть обёртка, которая передаёт вызов f не более 
+//* одного раза в ms миллисекунд. Другими словами, когда мы вызываем debounce, это гарантирует, 
+//* что все остальные вызовы будут игнорироваться в течение ms.
+//? Вариант 1 МОЙ
+function f(x) {
+	console.log(x);
+}
+
+function debounce(f, ms) {
+	let call = true;
+	return function () {
+		if (call) {
+			call = false;
+			setTimeout(() => call = true, ms);
+			f.apply(this, arguments);
+		}
+	}
+}
+// f = debounce(f, 1000);
+// f(2);// сработает
+// setTimeout(() => f(3), 800);// не сработает
+// setTimeout(() => f(5), 1500);// сработает
 
 //*Создайте декоратор delay(f, ms), который задерживает каждый вызов f на ms миллисекунд.
 //? Вариант 1 МОЙ
