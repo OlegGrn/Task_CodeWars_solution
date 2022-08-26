@@ -1,18 +1,13 @@
 "use strict";
 
-let user = {
-	firstName: "Вася",
-	sayHi() {
-		console.log(`Привет, ${this.firstName}!`);
+function sumPairs(ints, s) {
+
+	var seen = {}
+	for (var i = 0; i < ints.length; ++i) {
+		if (seen[s - ints[i]]) return [s - ints[i], ints[i]];
+		seen[ints[i]] = true
 	}
-};
-let sayHiUser = user.sayHi.bind(user);
-user = {};
-
-
-
-setTimeout(sayHiUser, 1000)
-
+}
 
 
 
@@ -22,7 +17,7 @@ setTimeout(sayHiUser, 1000)
 
 
 console.log(
-
+	sumPairs([0, 2, 5, 2, 5], 7)
 );
 
 

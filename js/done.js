@@ -1,5 +1,3 @@
-
-
 //* 
 //? Вариант 1 МОЙ
 
@@ -7,6 +5,46 @@
 
 //? Вариант 2  НЕ мой
 
+
+
+//* Учитывая список целых чисел и одно значение суммы, верните первые два значения (анализируйте слева) 
+//*в порядке появления, которые в сумме образуют сумму.
+//* Если имеется две или более пар с требуемой суммой, то решением является пара, 
+//* второй элемент которой имеет наименьший индекс.
+//? Вариант 1 МОЙ
+
+function sumPairs(ints, s) {
+
+	let result = {};
+	let arrKeys = []
+
+	outer:
+	for (let [ind, item] of ints.entries()) {
+
+		if (arrKeys.includes(item)) continue outer;
+		arrKeys.push(item);
+
+		for (let i = ++ind; i < ints.length; i++) {
+			let sum = item + ints[i];
+			if (sum == s) {
+				result[i] = [item, ints[i]];
+				arrKeys.push(ints[i])
+				continue outer;
+			}
+		}
+	}
+	return Object.values(result)[0]
+}
+
+//? Вариант 2  НЕ мой
+
+function sum_pairs(ints, s) {
+	let seen = new Set();
+	for (let i of ints) {
+		if (seen.has(s - i)) return [s - i, i];
+		seen.add(i);
+	}
+}
 
 //* Напишите функцию sum, которая бы работала следующим образом:
 //* sum(1)(2)(3) == 6; // 1 + 2 + 3
