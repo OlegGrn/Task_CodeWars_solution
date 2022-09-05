@@ -1,33 +1,34 @@
 "use strict";
 
-function sumPairs(ints, s) {
 
-	var seen = {}
-	for (var i = 0; i < ints.length; ++i) {
-		if (seen[s - ints[i]]) return [s - ints[i], ints[i]];
-		seen[ints[i]] = true
+function Calculator(x, b) {
+
+
+	function ssuumm() {
+		console.log(x + b);
+
+	}
+
+	function mmuull() {
+		console.log(x * b);
+
+	}
+
+	this.sum = function () {
+		ssuumm()
+	}
+
+	this.mul = function () {
+		mmuull()
 	}
 }
 
+let test = new Calculator(2, 8)
 
+test.sum();
+test.mul();
 
-
-
-
-
-
-console.log(
-	sumPairs([0, 2, 5, 2, 5], 7)
-);
-
-
-
-
-
-
-
-
-
+console.log(test);
 
 
 
