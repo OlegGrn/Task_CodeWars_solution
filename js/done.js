@@ -1515,7 +1515,7 @@ console.log(sumTo(22));
 //* Замените код Function Expression стрелочной функцией
 
 let ask = (question, yes, no) => (confirm(question)) ? yes() : no();
-
+result
 ask(
 	"Вы согласны?",
 	() => alert("Вы согласились."),

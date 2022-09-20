@@ -1,36 +1,40 @@
 "use strict";
 
 
-function Calculator(x, b) {
+function work(a, b) {
+	console.log(a + b);
+	//work.calls.push([...arguments])
 
+}
+//work.calls = [];
 
-	function ssuumm() {
-		console.log(x + b);
+function spy(func) {
 
+	function wrapper() {
+		wrapper.calls.push([...arguments]);
+		func.apply(this, arguments)
 	}
 
-	function mmuull() {
-		console.log(x * b);
+	wrapper.calls = []
+	return wrapper;
 
-	}
-
-	this.sum = function () {
-		ssuumm()
-	}
-
-	this.mul = function () {
-		mmuull()
-	}
 }
 
-let test = new Calculator(2, 8)
-
-test.sum();
-test.mul();
-
-console.log(test);
 
 
 
 
 
+
+
+
+
+work = spy(work);
+work(1, 2); // 3
+work(4, 5); // 9
+console.log(work.calls);
+console.log(work);
+
+// for (let args of work.calls) {
+// 	console.log('call:' + args.join()); // "call:1,2", "call:4,5"
+// }

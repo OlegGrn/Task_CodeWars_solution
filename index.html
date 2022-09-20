@@ -13,9 +13,48 @@
 	<div class="header">
 		<h1 class="titl">Привет!</h1>
 	</div>
+
+	<div class="main">
+		<button class="button" type="button" id="get-text">Получить текст с сервера</button>
+		<div class="result"></div>
+	</div>
+
+
+
 	<section class="main"></section>
 	<footer class="footer"></footer>
 	<script src="js/app.js"></script>
 </body>
 
 </html>
+
+
+<!-- let button = document.querySelector(".button");
+let result = document.querySelector(".result");
+let lock = false;
+
+
+const sleep = ms => {
+
+	return new Promise(luck => {
+		setTimeout(() => { luck(ms) }, ms)
+	})
+		.then((value) => {
+			result.innerHTML = `Выполнилось через ${value * 0.001} секунд!`;
+		})
+		.finally(() => {
+			lock = false
+			result.classList.add("result_done");
+		})
+}
+
+button.onclick = () => {
+	if (lock) {
+		result.innerHTML = "Ждите ...";
+		return
+	}
+	lock = true;
+	result.innerHTML = "";
+	result.classList.remove("result_done");
+	sleep(5000);
+} -->

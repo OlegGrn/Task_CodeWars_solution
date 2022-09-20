@@ -96,3 +96,45 @@ h6 {
 	text-align: center;
 	padding-top: 1em;
 }
+
+.main {
+	padding: 50px 0 0 0;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-direction: column;
+}
+
+.button {
+	font-size: 30px;
+	color: rgb(63, 55, 55);
+	border: 1px solid green;
+	padding: 10px 20px;
+	margin-bottom: 50px;
+	transition: all 0.3s ease 0s;
+	background-color: rgba(0, 128, 0, 0.1);
+}
+.button:hover {
+	background-color: rgba(0, 128, 0, 0.3);
+}
+.button:active {
+	background-color: rgba(238, 194, 194, 0.5);
+}
+.result {
+	font-size: 30px;
+	color: rgb(63, 55, 55);
+	border: 1px solid green;
+	padding: 25px 20px;
+	min-width: 300px;
+	transition: all 0.3s ease 0s;
+   background-color: rgba(238, 194, 194, 0.5);
+
+	
+	min-height: 100px;
+	width: 100%;
+	text-align: center;
+}
+.result_done  {
+   background-color: rgba(0, 128, 0, 0.2);
+
+}
