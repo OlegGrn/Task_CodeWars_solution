@@ -5,6 +5,26 @@
 
 //? Вариант 2  НЕ мой
 
+//* Создайте асинхронную функцию getUsers(names), которая получает на вход массив логинов пользователей GitHub,
+//* запрашивает у GitHub информацию о них и возвращает массив объектов-пользователей
+//* Если какой-то запрос завершается ошибкой функция должна возвращать null
+//? Вариант 1 МОЙ
+async function getUsers(names) {
+	return await Promise.all(
+		names.map(async user => {
+			const respon = await fetch(`https://api.github.com/users/${user}`);
+			return (!respon.ok) ? null : await respon.json();
+		})
+	)
+}
+/*
+let usersName = ["iliakan"
+	, "ilik"
+	, "-f-f-f-f-f-f-f-f-++++ff"
+]
+getUsers(usersName).then(console.log)
+*/
+
 //* Класс Clock написан в функциональном стиле. Перепишите его, используя современный синтаксис классов.
 /*function Clock({ template }) {
   
