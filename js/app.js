@@ -5,34 +5,32 @@ let form = document.querySelector('form');
 function maskPhone(form) {
 
 	const input = form.querySelector('input');
-	let regexp = /\D/g;
-	regexp.lastIndex = 2;
+	const mask = '+7 (___) ___ __ __';
+	const startNum = mask.indexOf('_');
+	console.log(startNum);
 
-	let val = (input.value.length < 3) ? input.value.replace(/\D/g, "") :
-		regexp.exec(input.value);
+	// let val = (input.value.length < 3) ? input.value.replace(/\D/g) :
+	// 	input.value.slice(3).replace(/\D/g, "");
 
+	let val = (input.value.length < 4) ? input.value.match(/\d/g) || [] :
+		input.value.slice(3).match(/\d/g) || [];
 
+	//console.log(val.length);
 
-	let mask = '7 (_) _';
 	let i = 0;
 
-	console.log(`val-${val}`);
 
 	let new_value = mask.replace(/[_]/g, (a) => {
-		let result = (i < val.length) ? val.charAt(i) : a;
-		i++;
-		return result;
-	})
-
-
+		//return (i < val.length) ? val.charAt(i++) : a;
+		return (i < val.length) ? val[i++] : a;
+	});
 
 	let emptyPos = new_value.indexOf('_');
 	let newValue = (emptyPos == -1) ? new_value
 		: new_value.slice(0, emptyPos);
 
-
 	input.value = newValue;
-	console.log(`input.value-${input.value} ${typeof input.value}`);
+
 
 
 
