@@ -3,18 +3,40 @@
 let form = document.querySelector('form');
 
 function maskPhone(form) {
-	const input = form.querySelector('input');
-	let val = input.value
-	console.log(val);
 
-	let mask = '__ __';
+	const input = form.querySelector('input');
+	let regexp = /\D/g;
+	regexp.lastIndex = 2;
+
+	let val = (input.value.length < 3) ? input.value.replace(/\D/g, "") :
+		regexp.exec(input.value);
+
+
+
+	let mask = '7 (_) _';
 	let i = 0;
+
+	console.log(`val-${val}`);
+
 	let new_value = mask.replace(/[_]/g, (a) => {
-		return i < val.length ? val.charAt(i++) : 1;
+		let result = (i < val.length) ? val.charAt(i) : a;
+		i++;
+		return result;
 	})
 
 
-	console.log(new_value)
+
+	let emptyPos = new_value.indexOf('_');
+	let newValue = (emptyPos == -1) ? new_value
+		: new_value.slice(0, emptyPos);
+
+
+	input.value = newValue;
+	console.log(`input.value-${input.value} ${typeof input.value}`);
+
+
+
+
 
 
 
