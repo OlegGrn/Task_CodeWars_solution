@@ -14,8 +14,12 @@
 		<h1 class="titl">Привет!</h1>
 	</div>
 
+	<form action="#" class="form-my">
+		<input type="tel" class="form-test__input input-my">
+	</form>
+
 	<form action="#" class="form-test">
-		<input type="tel" class="form-test__input">
+		<input type="tel" class="form-test__input input-test">
 	</form>
 
 	<div class="main">
@@ -31,34 +35,3 @@
 </body>
 
 </html>
-
-
-<!-- let button = document.querySelector(".button");
-let result = document.querySelector(".result");
-let lock = false;
-
-
-const sleep = ms => {
-
-	return new Promise(luck => {
-		setTimeout(() => { luck(ms) }, ms)
-	})
-		.then((value) => {
-			result.innerHTML = `Выполнилось через ${value * 0.001} секунд!`;
-		})
-		.finally(() => {
-			lock = false
-			result.classList.add("result_done");
-		})
-}
-
-button.onclick = () => {
-	if (lock) {
-		result.innerHTML = "Ждите ...";
-		return
-	}
-	lock = true;
-	result.innerHTML = "";
-	result.classList.remove("result_done");
-	sleep(5000);
-} -->
