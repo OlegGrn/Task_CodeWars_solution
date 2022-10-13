@@ -27,6 +27,8 @@ document.addEventListener("DOMContentLoaded", () => {
 		// получаем маску		
 		const mask = getMaskPhone(input);
 
+
+
 		input.addEventListener('input', (event) => maskPhoneInput(input, mask, event));
 		input.addEventListener('focus', () => maskPhoneFocus(input, mask));
 		//input.addEventListener('blur', () => maskPhoneBlur(input, mask));
@@ -35,8 +37,11 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 // ======= фокус на инпуте =====================
 function maskPhoneFocus(input, mask) {
+
 	const begining = mask.slice(0, mask.indexOf("_"));
 	input.value = (input.value < begining.length) ? begining : input.value;
+
+
 	setTimeout(() => {
 		//input.selectionStart = input.selectionEnd = input.value.length;
 	}, 0)
@@ -57,24 +62,53 @@ function getMaskPhone(input) {
 
 function maskPhoneInput(input, mask, event) {
 
+	console.log(event);
+	if (maskPhoneInput.starting) {
+		console.log(maskPhoneInput.starting);
+	}
+
+
+
+
+
+	const def = mask.slice(0, mask.indexOf("_")).length; // длина начала маски
+	let run = input.value.length - def; // длина введеных знаков
+	let cut = input.value.slice((input.selectionStart - run), input.selectionStart); // что было введено
+
+	console.log(`${input.value}  длина ${input.value.length}`);
+	//console.log(input.selectionStart);
+	console.log(cut);
+
 	//! ситуация когда первый ввод цифра, а курсор в самом начале инпута (цирфа не вводится, а курсор перескакивает)
 
 	const inputLength = input.value.length;
 	const startNum = mask.indexOf('_'); // начало ввода цифр в маске			
 	let i = 0;
 
-	let getValue = (inputLength < (startNum - 1)) ? input.value.match(/\d/g) || [] :  // получаем введные цифры из инпута массивом		
-		input.value.slice(startNum).match(/\d/g) || []; // (цифру из маски (+7) отрезаем)
-
+	let getValue = cut.match(/\d/g) || [];  // получаем введные цифры из инпута массивом
 
 	let mask_value = mask.replace(/[_]/g, (a) => (i < getValue.length) ? getValue[i++] : a); // заменяем "_" из маски на цифры из getValue
+	//console.log(mask_value);
+
 
 
 	let emptyPos = mask_value.indexOf('_');  // получаем позицию не заполненных "_" из маски	
 	let newInputValue = (emptyPos == -1) ? mask_value : mask_value.slice(0, emptyPos); // отрезаем пустые "_" 
 
+	console.log(newInputValue);
+	console.log(newInputValue.length);
+	maskPhoneInput.starting = newInputValue.length;
+
 	//? до сюда всё коректно**********************************************************
 
+	if (newInputValue.length > inputLength) {
+
+	} else {
+		input.value = newInputValue;
+
+	}
+
+	/*
 
 	if (event.data == null) {  //*удаления было
 		let start = input.selectionStart; // положение курсора при событии
@@ -116,5 +150,8 @@ function maskPhoneInput(input, mask, event) {
 	} else { //* удаления не было
 		input.value = newInputValue;
 	}
+	*/
+
+
 }
 
