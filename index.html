@@ -15,12 +15,22 @@
 	</div>
 
 	<form action="#" class="form-my">
-		<input type="tel" class="form-test__input input-my">
+		<input data-mask-phone class="form-test__input input-my" name="phoneRuMobile">
+
+
+
+
 	</form>
 
 	<form action="#" class="form-test">
 		<input type="tel" class="form-test__input input-test">
 	</form>
+
+	<form action="#" class="form-test">
+		<input class="form-test__input" type="tel" data-tel-input placeholder="Phone" maxlength="18" />
+	</form>
+
+
 
 	<div class="main">
 		<button class="button" type="button" id="get-text">Получить текст с сервера</button>

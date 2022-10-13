@@ -145,6 +145,7 @@ h6 {
 }
 .form-test {
 	text-align: center;
+	margin-bottom: 40px;
 }
 .form-test__input {
 	font-size: 25px;
