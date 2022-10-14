@@ -63,32 +63,53 @@ function getMaskPhone(input) {
 function maskPhoneInput(input, mask, event) {
 
 	console.log(event);
+	let test = input.value;
+
+
+	let getValueInput = function () {
+		let result;
+		const def = mask.slice(0, mask.indexOf("_")).length; // длина дефолтного начала маски   
+
+		if (!maskPhoneInput.starting) { // первый раз ввод в инпут	
+			let run = input.value.length - def; // длина введеных знаков
+			let cut = input.value.slice((input.selectionStart - run), input.selectionStart); // что было введено
+			result = cut.match(/\d/g) || [];  // получаем введные цифры из инпута массивом
+
+		} else if (maskPhoneInput.starting.length < input.value.length) { // в инпуте уже что-то было
+			let befor = maskPhoneInput.starting.slice(def); // прежние данные в ипуте за минусом def (маски);
+			let run = input.value.length - maskPhoneInput.starting.length; // длина введеных знаков
+			let cut = input.value.slice((input.selectionStart - run), input.selectionStart); // что было введено
+
+			if ((input.selectionStart - run) < def) { // ввод был внутри def (дефолтного начала маски) 
+				let cutValue = cut.match(/\d/g) || []; // введенные цифры массивом
+				let beforing = befor.match(/\d/g) || []; // прежние цифры массивом (без def !!!!)
+				result = cutValue.concat(beforing); // складываем массивы (cutValue + beforing)
+
+			} else { // ввод было после def
+				let introduced = input.value.slice(def); // всё значение инпута за минусом def
+				result = introduced.match(/\d/g) || [];  // получаем цифры из инпута массивом
+			}
+		} else {
+
+
+			result = input.value.slice(def).match(/\d/g) || [];
+		}
+
+		return result
+	};
+
 	if (maskPhoneInput.starting) {
-		console.log(maskPhoneInput.starting);
+		console.log(`*${test}*длина ${test.length} / ${maskPhoneInput.starting.length} прежняя длина. Курсор - ${input.selectionStart}`)
+	} else {
+		console.log(`*${test}*длина ${test.length} / "undif" прежняя длина. Курсор - ${input.selectionStart}`)
 	}
 
 
 
-
-
-	const def = mask.slice(0, mask.indexOf("_")).length; // длина начала маски
-	let run = input.value.length - def; // длина введеных знаков
-	let cut = input.value.slice((input.selectionStart - run), input.selectionStart); // что было введено
-
-	console.log(`${input.value}  длина ${input.value.length}`);
-	//console.log(input.selectionStart);
-	console.log(cut);
-
-	//! ситуация когда первый ввод цифра, а курсор в самом начале инпута (цирфа не вводится, а курсор перескакивает)
-
-	const inputLength = input.value.length;
-	const startNum = mask.indexOf('_'); // начало ввода цифр в маске			
 	let i = 0;
-
-	let getValue = cut.match(/\d/g) || [];  // получаем введные цифры из инпута массивом
-
+	let getValue = getValueInput();  // получаем введные цифры из инпута массивом
 	let mask_value = mask.replace(/[_]/g, (a) => (i < getValue.length) ? getValue[i++] : a); // заменяем "_" из маски на цифры из getValue
-	//console.log(mask_value);
+
 
 
 
@@ -97,16 +118,14 @@ function maskPhoneInput(input, mask, event) {
 
 	console.log(newInputValue);
 	console.log(newInputValue.length);
-	maskPhoneInput.starting = newInputValue.length;
+
+	maskPhoneInput.starting = newInputValue;//!!!!!!!!!!!!
+	input.value = newInputValue;
+
 
 	//? до сюда всё коректно**********************************************************
 
-	if (newInputValue.length > inputLength) {
 
-	} else {
-		input.value = newInputValue;
-
-	}
 
 	/*
 
