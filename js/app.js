@@ -12,7 +12,7 @@ const setInputCheek = {
 	phoneRuMobile: { // на российские мобильные + городские с кодом из 3 цифр  
 		set: /^((8|\+7)[\- ]?)?(\(?\d{3}\)?[\- ]?)?[\d\- ]{7,10}$/,
 		help: "Российские мобильные",
-		mask: '+7(___) ___ ____'
+		mask: '+777 (___) ___ ____'
 	},
 	class_remove: new Set() // коллекция классов для последующей очистки формы
 }
@@ -64,20 +64,29 @@ function maskPhoneInput(input, mask, event) {
 
 	console.log(event);
 	let test = input.value;
-	let cursorSelection;
+	let cursorSelection; // по коду при необходимости получает цифру куда переставить курсор
 
 
 	let getValueInput = function () {
 		let result;
-		const def = mask.slice(0, mask.indexOf("_")).length; // длина дефолтного начала маски   
+		const def = mask.slice(0, mask.indexOf("_")).length; // длина дефолтного начала маски 
+		const lengthNumberDef = mask.slice(0, def).replace(/\D/g, "").length; // длина цифр в def маски
 
 
-		if (!maskPhoneInput.starting) { // первый раз ввод в инпут	
+		let first; // цифры массивом из прежнего inut.value
+		let two;  // цифры массивом из текущего inut.value 
+		if (maskPhoneInput.starting) {
+			first = maskPhoneInput.starting.match(/\d/g);
+			two = input.value.match(/\d/g);
+		}
+
+
+		if (!maskPhoneInput.starting) { //! первый раз ввод в инпут	
 			let run = input.value.length - def; // длина введеных знаков
 			let cut = input.value.slice((input.selectionStart - run), input.selectionStart); // что было введено
 			result = cut.match(/\d/g) || [];  // получаем введные цифры из инпута массивом
 
-		} else if (maskPhoneInput.starting.length < input.value.length) { // в инпуте уже что-то было и новое добавилос
+		} else if (maskPhoneInput.starting.length < input.value.length) { //! в инпуте уже что-то было и новое добавилось
 			let befor = maskPhoneInput.starting.slice(def); // прежние данные в ипуте за минусом def (маски);
 			let run = input.value.length - maskPhoneInput.starting.length; // длина введеных знаков
 			let cut = input.value.slice((input.selectionStart - run), input.selectionStart); // что было введено
@@ -91,38 +100,86 @@ function maskPhoneInput(input, mask, event) {
 				let introduced = input.value.slice(def); // всё значение инпута за минусом def
 				result = introduced.match(/\d/g) || [];  // получаем цифры из инпута массивом
 			}
-		} else if (maskPhoneInput.starting.length > input.value.length) { // было удаление
-
-			let first = maskPhoneInput.starting.match(/\d/g);
-			let two = input.value.match(/\d/g);
-
-			console.log(`first ${first}, two ${two}, def.length ${def}`);
-
-			console.log(first.length == two.length);
-
-			if (event.inputType == 'deleteContentBackward') {
+		} else if (maskPhoneInput.starting.length > input.value.length) { //! было удаление
+			// если длинны этих массивов равны - было удаления символа маски
 
 
-			} else if (event.inputType == 'deleteContentForward') {
+			console.log(`first ${first}, two ${two}`);
 
-				if (input.selectionStart < def) { // ввод в зоне def
-					cursorSelection = def;
-					result = input.value.slice(def).match(/\d/g) || [];
+
+			if (event.inputType == 'deleteContentBackward') { //? удаление клавишей BACKSPACE
+				//! все вырезания при кливише DELETE - срабатывает "deleteContentBackward"
+				if (input.selectionStart <= def) { // ввод в зоне def (надо сохранить все прежнием цифры)
+					cursorSelection = def; // курсор ставим в конец def
+					result = input.value.slice(def - 1).match(/\d/g) || []; // сокрщаем def на 1, в итоге сохраняем все прежние цифры после def
+
+				} else if (input.selectionStart > def && first.length == two.length) { //ввод за def и было удаления символа маски вместо цифры
+					// поэтому ищем первую цифру СЛЕВА от куросора и удаляем её					
+					let iBefore; // искомая позция цифры для последующего удаления
+					result = maskPhoneInput.starting.replace(/\d/g, (a, i) => {
+						if (i < input.selectionStart) {
+							iBefore = i; // последня сохранённая позиция и есть искомая цифра
+							cursorSelection = i;
+							return a
+						} else return a
+					}).replace(/\d/g, (a, i) => (i == iBefore) ? "" : a) // удаляем найденную цифру
+						.slice(def).match(/\d/g) || [];
+
 				} else {
+					cursorSelection = input.selectionStart; // курсор оставляем в selectionStart
+					result = input.value.slice(def).match(/\d/g) || [];
+				}
 
+			} else if (event.inputType == 'deleteContentForward') { //? удаление клавишей DELETE
+				if (input.selectionStart < (def - 1)) {
+					//! переделать - верный выбор после цифр в def, а не перед первой скобкой
+					// ввод в зоне def (надо или нет удалить первую послe def цифру при любом раскладе?)
+					// у def отнимаем 1 чтобы сработало удаление только перед первой скобкой в маске, 
+					// а при удалении превых цифр маски, например +7, будет только перевод курсора
+					// если надо удалить первую после def цифру при любом DELETE в зоне def
+					//*result = input.value.slice(def).match(/\d/g) || []; //отрезаем первые цифры по длине def (за счет того что один из знаков def
+					// удалится, то в "отрез" попадет и первая цифра после def)
+					//** */ если надо удалять только при DELETE непосредственно перед первой скобкой def 					
+					//result = input.value.slice(def - 1).match(/\d/g) || []; // уменьшаем def и сохраняем все ццифры
+					result = input.value.slice(def - 1).match(/\d/g) || []; // уменьшаем def и сохраняем все ццифры	
+					cursorSelection = def; // курсор ставим в конец def
+
+				} else if (input.selectionStart >= (def - 1) && first.length == two.length) { //ввод за def и было удаления символа маски вместо цифры
+					// поэтому ищем первую цифру СПРАВА от куросора и удаляем её
+					let del = true; // после удаления одной искомой цифры переводим в false, чтобы не удалить остальные
+					result = maskPhoneInput.starting.replace(/\d/g, (a, i) => {
+						if (i > input.selectionStart && del) {
+							del = false;
+							cursorSelection = i;
+							return ""
+						} else return a
+					}).slice(def).match(/\d/g) || []; // из полученной строки получаем результат (цифры массивом за минусом def)
+
+				} else if (input.selectionStart >= (def - 1)) { // ввод за def и + не было удаления символа маски
+					cursorSelection = input.selectionStart; // курсор оставляем в selectionStart
+					result = input.value.slice(def).match(/\d/g) || [];
 				}
 
 
+			} else if (event.inputType == 'deleteByCut') { //? удаление клавишей ВЫРЕЗАНИЕМ
 
-			} else if (event.inputType == 'deleteByCut') {
+				if (input.selectionStart < def) {
+
+					cursorSelection = def;
+					result = input.value.slice(
+						//input.selectionStart + (lengthNumberDef - (first.length - two.length))  //! переделать
+						input.selectionStart   //! переделать
+					).match(/\d/g) || [];
+
+				} else {
+					result = input.value.slice(def).match(/\d/g) || [];
+				}
 
 				console.log('deleteByCut')
+				//result = input.value.slice(def).match(/\d/g) || [];
 			}
-
-			result = input.value.slice(def).match(/\d/g) || [];
 		}
-
-		return result
+		return result // цифры массивом (!!! цифры из маски не учитываются !!!)
 	};
 
 	if (maskPhoneInput.starting) {
@@ -140,68 +197,11 @@ function maskPhoneInput(input, mask, event) {
 	let newInputValue = (emptyPos == -1) ? mask_value : mask_value.slice(0, emptyPos); // отрезаем пустые "_" 
 
 
-
-
-	console.log(newInputValue);
-	console.log(newInputValue.length);
-
 	maskPhoneInput.starting = newInputValue;//!!!!!!!!!!!!
 	input.value = newInputValue;
-	if (cursorSelection) {
-		console.log(cursorSelection);
+	if (cursorSelection != undefined) {
 		input.selectionStart = input.selectionEnd = cursorSelection;
 	}
-
-
-
-	//? до сюда всё коректно**********************************************************
-
-
-
-	/*
-
-	if (event.data == null) {  //*удаления было
-		let start = input.selectionStart; // положение курсора при событии
-
-		if (newInputValue.length > inputLength) {
-			// новый инпут больше страрого (т.е были добавлены или удалены пробелы у нового значения)
-			console.log(event);
-			console.log(input.value);
-			console.log(inputLength);
-			console.log(`курсор на позции - ${start}`);
-			console.log(`длина нового инпута - ${newInputValue.length}`);
-
-			if (start < inputLength) {  // курсор был внутри инпута при собыити
-
-				console.log(111);
-
-				input.value = newInputValue;
-				input.selectionStart = input.selectionEnd = start;
-
-
-
-			} else { // курсор был с краю инпута (в конце) при собыити
-
-				console.log(222);
-
-				let lastPos = mask.lastIndexOf("_", inputLength); // находим позицию самой ближней "_" до текщего последнего значения введенного в инпут
-				// убираем лишнюю длину будущему инпуту через проверку, чтобы это было не начало маски     
-				if (inputLength > startNum) {
-					// отрезаем с конца разницу между inputLength - lastPos и +1, чтобы удалить последнню введенную цифру на месте "_" (lastPos)
-					input.value = newInputValue.slice(0, -(inputLength - lastPos + 1));
-				} else { // было удаление, но это уже начало "маски", поэтому ничего не отрезаем
-					input.value = newInputValue
-				}
-
-				//! ситуация когда клавиша delete скраю -1 и следующий пробел
-
-			}
-		}
-	} else { //* удаления не было
-		input.value = newInputValue;
-	}
-	*/
-
 
 }
 
