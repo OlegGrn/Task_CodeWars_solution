@@ -12,7 +12,7 @@ const setInputCheek = {
 	phoneRuMobile: { // на российские мобильные + городские с кодом из 3 цифр  
 		set: /^((8|\+7)[\- ]?)?(\(?\d{3}\)?[\- ]?)?[\d\- ]{7,10}$/,
 		help: "Российские мобильные",
-		mask: '+7 7 (___) ___ ____'
+		mask: '7(___) ____ ____'
 	},
 	class_remove: new Set() // коллекция классов для последующей очистки формы
 }
@@ -77,6 +77,7 @@ function maskPhoneInput(input, mask, event) {
 		return pos;
 	}
 
+
 	let getValueInput = function (mask) {
 		let result;
 		const def = mask.slice(0, mask.indexOf("_")).length; // длина дефолтного начала маски 
@@ -118,12 +119,9 @@ function maskPhoneInput(input, mask, event) {
 			}
 
 			//! переделать !!!!!!!!!!! переделать !!!!!!!!!!! переделать !!!!!!!!!!! переделать !!!!!!!!!!! переделать !!!!!!!!!!! переделать !!!!!!!!!!! 
-			cursorSelection = (input.selectionStart > maskPhoneInput.starting.length) ? maskPhoneInput.starting.length + 1 :
-				maskPhoneInput.starting.length;
+			// cursorSelection = (input.selectionStart > maskPhoneInput.starting.length) ? maskPhoneInput.starting.length + 1 :
+			// 	maskPhoneInput.starting.length;
 			//! переделать !!!!!!!!!!! переделать !!!!!!!!!!! переделать !!!!!!!!!!! переделать !!!!!!!!!!! переделать !!!!!!!!!!! переделать !!!!!!!!!!! 
-
-
-
 
 		} else if (maskPhoneInput.starting.length > input.value.length) { //! было удаление
 			// если длинны этих массивов равны - было удаления символа маски
@@ -191,6 +189,7 @@ function maskPhoneInput(input, mask, event) {
 		return result // цифры массивом (!!! цифры из маски не учитываются !!!)
 	};
 
+
 	if (maskPhoneInput.starting) {
 		console.log(`-${test}-длина тукщая ${test.length} / ранее длина ${maskPhoneInput.starting.length}. Курсор - ${input.selectionStart}`)
 	} else {
@@ -203,6 +202,68 @@ function maskPhoneInput(input, mask, event) {
 
 	let emptyPos = mask_value.indexOf('_');  // получаем позицию не заполненных "_" из маски	
 	let newInputValue = (emptyPos == -1) ? mask_value : mask_value.slice(0, emptyPos); // отрезаем пустые "_" 
+
+	/*
+	- условие - ввод (увеличение инпута)
+	- если после input.selectionStart идет цифра - курсор ставим на input.selectionStart
+	- если после input.selectionStart нет цфры - ищем позцию ближайшей и курсор ставин на ее позицию + 1 (ближайшая цифра это и есть крайняя вставленная цифра)
+
+	- вычисляем количество введнных знаков (например 4)
+	- находим позицию их начала ввода (например 3)
+	- от 3 отсчитываем четвертую цифру
+
+	*/
+	function findPosNumRight(mask, cursor, val, prev, newVal) {
+		let result;
+		const posLastNumMask = findLastNumMask(mask);
+		const def = mask.slice(0, mask.indexOf("_")).length; // длина дефолтного начала маски		
+
+
+
+		let count = 0;
+		let quantity = val.length - prev.length; // количество введенных знаков			
+		let start = (quantity > 0) ? cursor - quantity : 0; // позция начала их ввода
+
+		let looking = true;
+		let posFirstNumRight;
+		newVal.replace(/\d/g, (a, i) => {
+			if (i >= start && looking && i > posLastNumMask) {
+				looking = false;
+				count = 0;
+				posFirstNumRight = i;
+			}
+		})
+
+		newVal.replace(/\d/g, (a, i) => {
+			if (i = posFirstNumRight) {
+				count++;
+				result = ++i;
+			} else if (count <= quantity) {
+				count++;
+				result = ++i;
+			}
+		})
+
+
+		let test = result || null;
+		console.log(`test - ${test} / posFirstNumRight - ${posFirstNumRight} \ start - ${start}`);
+		return test
+	}
+
+
+
+	if (maskPhoneInput.starting && (input.value.length - maskPhoneInput.starting.length) > 0) {
+
+		cursorSelection = findPosNumRight(
+			mask, input.selectionStart, input.value, maskPhoneInput.starting, newInputValue
+		) || input.selectionStart
+
+
+
+	}
+
+
+
 
 	maskPhoneInput.starting = newInputValue;//!!!!!!!!!!!!
 	input.value = newInputValue;
