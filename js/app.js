@@ -66,6 +66,8 @@ function maskPhoneInput(input, mask, event) {
 	let test = input.value;
 	let cursorSelection; // по коду при необходимости получает цифру куда переставить курсор
 
+	/*
+
 	// ищет номер позиции последней цифры в def маски
 	function findLastNumMask(mask) {
 		const def = mask.slice(0, mask.indexOf("_")).length; // длина дефолтного начала маски
@@ -76,6 +78,7 @@ function maskPhoneInput(input, mask, event) {
 		})
 		return pos;
 	}
+	*/
 
 
 	let getValueInput = function (mask) {
@@ -107,21 +110,15 @@ function maskPhoneInput(input, mask, event) {
 
 			if ((input.selectionStart - run) < def) { // ввод был внутри def (дефолтного начала маски) 
 				let cutValue = cut.match(/\d/g) || []; // введенные цифры массивом
-				let beforing = befor.match(/\d/g) || []; // прежние цифры массивом (без def !!!!)			
-
-				// если нодо чтобы ввод в пределах цифр def (posLastNumMask) ничего не происходило
+				let beforing = befor.match(/\d/g) || []; // прежние цифры массивом (без def !!!!)
+				// если нодо чтобы ввод в пределах цифр def (posLastNumMask) игнорировался
 				result = ((input.selectionStart - run) <= posLastNumMask) ? beforing : cutValue.concat(beforing); // складываем массивы (cutValue + beforing)
-				// result = cutValue.concat(beforing); // складываем массивы (cutValue + beforing) // всегда срабатывает ввод
+				//result = cutValue.concat(beforing); // складываем массивы (cutValue + beforing) // всегда срабатывает ввод (даже в зоне цифр def)
 
 			} else { // ввод было после def
 				let introduced = input.value.slice(def); // всё значение инпута за минусом def
 				result = introduced.match(/\d/g) || [];  // получаем цифры из инпута массивом
 			}
-
-			//! переделать !!!!!!!!!!! переделать !!!!!!!!!!! переделать !!!!!!!!!!! переделать !!!!!!!!!!! переделать !!!!!!!!!!! переделать !!!!!!!!!!! 
-			// cursorSelection = (input.selectionStart > maskPhoneInput.starting.length) ? maskPhoneInput.starting.length + 1 :
-			// 	maskPhoneInput.starting.length;
-			//! переделать !!!!!!!!!!! переделать !!!!!!!!!!! переделать !!!!!!!!!!! переделать !!!!!!!!!!! переделать !!!!!!!!!!! переделать !!!!!!!!!!! 
 
 		} else if (maskPhoneInput.starting.length > input.value.length) { //! было удаление
 			// если длинны этих массивов равны - было удаления символа маски
@@ -196,80 +193,105 @@ function maskPhoneInput(input, mask, event) {
 		console.log(`-${test}-длина ${test.length} / "undif" прежняя длина. Курсор - ${input.selectionStart}`)
 	}
 
-	let i = 0;
-	let getValue = getValueInput(mask);  // получаем введные цифры из инпута массивом
-	let mask_value = mask.replace(/[_]/g, (a) => (i < getValue.length) ? getValue[i++] : a); // заменяем "_" из маски на цифры из getValue
+	let getValue = getValueInput(mask);  // получаем введные цифры из инпута массивом	
 
-	let emptyPos = mask_value.indexOf('_');  // получаем позицию не заполненных "_" из маски	
-	let newInputValue = (emptyPos == -1) ? mask_value : mask_value.slice(0, emptyPos); // отрезаем пустые "_" 
+	function madeNewValue(mask, getValue) {
+		let i = 0;
+		let mask_value = mask.replace(/[_]/g, (a) => (i < getValue.length) ? getValue[i++] : a); // заменяем "_" из маски на цифры из getValue
+		let emptyPos = mask_value.indexOf('_');  // получаем позицию не заполненных "_" из маски
+		return (emptyPos == -1) ? mask_value : mask_value.slice(0, emptyPos); // отрезаем пустые "_" 
+	}
 
+	let newInputValue = madeNewValue(mask, getValue);
 	/*
-	- условие - ввод (увеличение инпута)
-	- если после input.selectionStart идет цифра - курсор ставим на input.selectionStart
-	- если после input.selectionStart нет цфры - ищем позцию ближайшей и курсор ставин на ее позицию + 1 (ближайшая цифра это и есть крайняя вставленная цифра)
 
-	- вычисляем количество введнных знаков (например 4)
-	- находим позицию их начала ввода (например 3)
-	- от 3 отсчитываем четвертую цифру
-
-	*/
 	function findPosNumRight(mask, cursor, val, prev, newVal) {
-		let result;
-		const posLastNumMask = findLastNumMask(mask);
+		const posLastNumMask = findLastNumMask(mask);// позциция последней цифры в def маски
 		const def = mask.slice(0, mask.indexOf("_")).length; // длина дефолтного начала маски		
-
-
-
-		let count = 0;
 		let quantity = val.length - prev.length; // количество введенных знаков			
 		let start = (quantity > 0) ? cursor - quantity : 0; // позция начала их ввода
 
-		let looking = true;
-		let posFirstNumRight;
+		let result;
+		let count;// вспомогательная
+		let looking = true; // вспомогательная
 		newVal.replace(/\d/g, (a, i) => {
 			if (i >= start && looking && i > posLastNumMask) {
 				looking = false;
-				count = 0;
-				posFirstNumRight = i;
+				count = 1;
+				result = ++i;
+			} else if (!looking && count < quantity) {
+				count++;
+				result = ++i
 			}
 		})
-
-		newVal.replace(/\d/g, (a, i) => {
-			if (i = posFirstNumRight) {
-				count++;
-				result = ++i;
-			} else if (count <= quantity) {
-				count++;
-				result = ++i;
-			}
-		})
-
-
-		let test = result || null;
-		console.log(`test - ${test} / posFirstNumRight - ${posFirstNumRight} \ start - ${start}`);
-		return test
+		if (prev.length == newVal.length) {
+			//result = start; //!подумать как исправить ошибку при вводе цифр с пробелами
+			//! наверное quantity надо переделать (учитывать только введённые цифры, а не знаки)
+		}
+		return (start <= posLastNumMask) ? def : result;// при условии что ввод цифр в зоне def игнорируется
+		// при условии что ввод цифра срабатывает всегда (даже в зоне цифр def) //return result;
 	}
-
+	*/
 
 
 	if (maskPhoneInput.starting && (input.value.length - maskPhoneInput.starting.length) > 0) {
-
 		cursorSelection = findPosNumRight(
-			mask, input.selectionStart, input.value, maskPhoneInput.starting, newInputValue
+			mask,
+			input.selectionStart,
+			input.value,
+			maskPhoneInput.starting,
+			newInputValue
 		) || input.selectionStart
-
-
-
 	}
-
-
-
 
 	maskPhoneInput.starting = newInputValue;//!!!!!!!!!!!!
 	input.value = newInputValue;
 	if (cursorSelection != undefined) {
 		input.selectionStart = input.selectionEnd = cursorSelection;
 	}
-
 }
+
+//**** ищет позицю для курсора при вводе в инпут ********************
+function findPosNumRight(mask, cursor, val, prev, newVal) {
+	const posLastNumMask = findLastNumMask(mask);// позциция последней цифры в def маски
+	const def = mask.slice(0, mask.indexOf("_")).length; // длина дефолтного начала маски		
+	let quantity = val.length - prev.length; // количество введенных знаков			
+	let start = (quantity > 0) ? cursor - quantity : 0; // позция начала их ввода
+
+	let result;
+	let count;// вспомогательная
+	let looking = true; // вспомогательная
+	newVal.replace(/\d/g, (a, i) => {
+		if (i >= start && looking && i > posLastNumMask) {
+			looking = false;
+			count = 1;
+			result = ++i;
+		} else if (!looking && count < quantity) {
+			count++;
+			result = ++i
+		}
+	})
+	if (prev.length == newVal.length) {
+		//result = start; //!подумать как исправить ошибку при вводе цифр с пробелами
+		//! наверное quantity надо переделать (учитывать только введённые цифры, а не знаки)
+	}
+	return (start <= posLastNumMask) ? def : result;// при условии что ввод цифр в зоне def игнорируется
+	// при условии что ввод цифра срабатывает всегда (даже в зоне цифр def) //return result;
+}
+//===============================================================
+
+// ****  ищет номер позиции последней цифры в def маски ******
+function findLastNumMask(mask) {
+	const def = mask.slice(0, mask.indexOf("_")).length; // длина дефолтного начала маски
+	let pos;
+	mask.slice(0, def).replace(/\d/g, (a, offset) => {
+		pos = offset;
+		return a
+	})
+	return pos;
+}
+//==============================================================
+
+
+
 
