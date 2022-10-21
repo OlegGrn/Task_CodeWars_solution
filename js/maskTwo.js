@@ -1,5 +1,3 @@
-"use strict";
-
 const setInputCheek = {
 	name: { // регулярка провекри имени
 		set: /^[a-zа-я -]{2,16}$/i,
@@ -12,7 +10,7 @@ const setInputCheek = {
 	phoneRuMobile: { // на российские мобильные + городские с кодом из 3 цифр  
 		set: /^((8|\+7)[\- ]?)?(\(?\d{3}\)?[\- ]?)?[\d\- ]{7,10}$/,
 		help: "Российские мобильные",
-		mask: '+77(___)   ____ ____'
+		mask: ' 77(___) ____ ____'
 	},
 	class_remove: new Set() // коллекция классов для последующей очистки формы
 }
@@ -82,22 +80,24 @@ function maskPhoneInput(options) {
 	let { input, mask, event, cursorStart, cursorEnd } = options;
 
 	console.log(event);
-	console.log(`CursorStart - ${cursorStart} \ cursorEnd - ${cursorEnd} \\\ input.selectionStart - ${input.selectionStart}`);
+	console.log(`Input cursorStart - ${cursorStart} \ cursorEnd - ${cursorEnd}`);
 
-	if (maskPhoneInput.starting) {
-		console.log(`-${input.value}- тукщий инпут. `)
-	} else {
-		console.log(`-${input.value}- тукщий инпут . `)
-	}
+
+	// if (maskPhoneInput.starting) {
+	// 	console.log(`-${input.value}-длина тукщая ${input.value.length} / ранее длина ${maskPhoneInput.starting.length}. Курсор - ${input.selectionStart} / cursorStart - ${cursorStart}`)
+	// } else {
+	// 	console.log(`-${input.value}-длина ${input.value.length} / "undif" прежняя длина. Курсор - ${input.selectionStart} / cursorStart - ${cursorStart}`)
+	// }
 
 	// получаем введные цифры из инпута массивом + положение курсора (или undifinded)	
-	let { getValue, cursorPos } = getValueInput({ input, mask, event, cursorStart, cursorEnd }, maskPhoneInput.starting);
+	let { getValue, cursorSelection } = getValueInput({ input, mask, event, cursorStart, cursorEnd }, maskPhoneInput.starting);
 	let newInputValue = madeNewValue(mask, getValue); // новое значение инпута 
 
 	// получаем попожение курсора если не получен из getValueInput)
-	/*	
-	if (maskPhoneInput.starting && cursorPos == undefined) {
-		cursorPos = findPosNumRight(
+	//if (maskPhoneInput.starting && (input.value.length - maskPhoneInput.starting.length) > 0) {
+	if (maskPhoneInput.starting && cursorSelection == undefined) {
+
+		cursorSelection = findPosNumRight(
 			mask,
 			input.selectionStart,
 			input.value,
@@ -105,13 +105,13 @@ function maskPhoneInput(options) {
 			newInputValue
 		) || input.selectionStart
 	}
-	*/
+
 	//! сохраняем прежнее знечение в самой фукции как свойство объекта
 	maskPhoneInput.starting = newInputValue;
 	input.value = newInputValue;
-	// схлопываем курсор и выставляем его по cursorPos
-	if (cursorPos != undefined) {
-		input.selectionStart = input.selectionEnd = cursorPos;
+	// схлопываем курсор и выставляем его по cursorSelection
+	if (cursorSelection != undefined) {
+		input.selectionStart = input.selectionEnd = cursorSelection;
 	}
 }
 
@@ -121,58 +121,14 @@ function getValueInput(options, prev) {
 
 	let { input, mask, event, cursorStart, cursorEnd } = options;
 	let result;
-	let cursorPos; // по коду при необходимости получает цифру куда переставить курсор	
-	let cursorInpt = input.selectionStart; // положение курсора при событии
+	let cursorSelection; // по коду при необходимости получает цифру куда переставить курсор	
+	let cursor = input.selectionStart; // положение курсора при событии
 
 	const def = mask.slice(0, mask.indexOf("_")).length; // длина дефолтного начала маски 
 	const lengthNumberDef = mask.slice(0, def).replace(/\D/g, "").length; // длина цифр в def маски
 	const posLastNumMask = findLastNumMask(mask);
 
-	// cursorStart - начало ввода (если ранее было выделение - начало выделения), cursorInpt - окончание ввода
-	// строка между ними  - это то что ввёл юзер   
-	let newNumber = input.value.slice(cursorStart, cursorInpt).replace(/\D/g, "");
-	// убираем что ввёл юэер и получаем исходый инпут (!! за минусом удаления, если оно было, т.е замена веделенного текста новыми данными)
-	let prevVal = input.value.slice(0, cursorStart) + input.value.slice(cursorInpt);
 
-
-	let nextValOne = input.value.slice(0, cursorStart);
-
-	let nextValTwo = (cursorInpt > cursorEnd) ?
-		input.value.slice(
-			(cursorEnd < def) ? (cursorInpt - cursorStart) + (def - (cursorEnd - cursorStart)) : cursorInpt
-		) :
-		(cursorInpt < cursorEnd) ?
-			input.value.slice(
-
-			) :
-			(cursorInpt == cursorEnd) ?
-				input.value.slice(
-					(cursorEnd < def) ? (cursorInpt - cursorStart) + (def - (cursorEnd - cursorStart)) : cursorInpt
-				) :
-				0;
-
-
-
-	let nextVal = nextValOne + newNumber + nextValTwo;
-
-	//prevVal.slice(0, (cursorStart < def) ? def : cursorStart) +	
-	// input.value.slice((cursorEnd < def) ? (cursorInpt - cursorStart) + (def - cursorStart) : cursorInpt) :
-	// input.value.slice((cursorEnd < def) ? def - (cursorEnd - cursorStart) : cursorEnd);
-	// prevVal.slice((cursorStart < def) ? def : cursorStart);
-
-	console.log(`${prevVal} - прежнее значение инпута /prevVal/ `);
-	console.log(`${newNumber} - новые цифры /newNumber/ ${nextValOne} nextValOne / ${nextValTwo} nextValTwo `);
-	console.log(`${nextVal} - новое значение инпута`);
-
-
-	result = nextVal.slice(
-
-		(cursorStart < def) ? cursorStart : def
-
-	).match(/\d/g) || [];
-
-
-	/*
 	let first; // цифры массивом из прежнего inut.value
 	let two;  // цифры массивом из текущего inut.value 
 	let lengthDifference; // разнция длин прежнего input.value и текущего
@@ -182,24 +138,22 @@ function getValueInput(options, prev) {
 		lengthDifference = prev.length - input.value.length
 	}
 
-
-
 	if (!prev) { //! первый раз ввод в инпут	
 		let run = input.value.length - def; // длина введеных знаков
-		let cut = input.value.slice((cursorInpt - run), cursorInpt); // что было введено
+		let cut = input.value.slice((cursor - run), cursor); // что было введено
 		result = cut.match(/\d/g) || [];  // получаем введные цифры из инпута массивом			
-		//result = (cursorInpt <= posLastNumMask + 1) ? [] : cut.match(/\d/g) || [];//что бы ввод в пределах цифр def ничего не происходило
+		//result = (cursor <= posLastNumMask + 1) ? [] : cut.match(/\d/g) || [];//что бы ввод в пределах цифр def ничего не происходило
 
 	} else if (prev.length < input.value.length) { //! в инпуте уже что-то было и новое добавилось
 		let befor = prev.slice(def); // прежние данные в ипуте за минусом def (маски);
 		let run = input.value.length - prev.length; // длина введеных знаков
-		let cut = input.value.slice((cursorInpt - run), cursorInpt); // что было введено
+		let cut = input.value.slice((cursor - run), cursor); // что было введено
 
-		if ((cursorInpt - run) < def) { // ввод был внутри def (дефолтного начала маски) 
+		if ((cursor - run) < def) { // ввод был внутри def (дефолтного начала маски) 
 			let cutValue = cut.match(/\d/g) || []; // введенные цифры массивом
 			let beforing = befor.match(/\d/g) || []; // прежние цифры массивом (без def !!!!)
 			// если нодо чтобы ввод в пределах цифр def (posLastNumMask) игнорировался
-			result = ((cursorInpt - run) <= posLastNumMask) ? beforing : cutValue.concat(beforing); // складываем массивы (cutValue + beforing)
+			result = ((cursor - run) <= posLastNumMask) ? beforing : cutValue.concat(beforing); // складываем массивы (cutValue + beforing)
 			//result = cutValue.concat(beforing); // складываем массивы (cutValue + beforing) // всегда срабатывает ввод (даже в зоне цифр def)
 
 		} else { // ввод было после def
@@ -211,76 +165,75 @@ function getValueInput(options, prev) {
 		// если длинны этих массивов равны - было удаления символа маски (`first ${first}, two ${two}`);		
 
 		if (event.inputType == 'deleteContentBackward') { //? удаление клавишей BACKSPACE
-			if (cursorInpt <= def) { // ввод в зоне def (надо сохранить все прежнием цифры)
-				cursorPos = def; // курсор ставим в конец def
+			if (cursor <= def) { // ввод в зоне def (надо сохранить все прежнием цифры)
+				cursorSelection = def; // курсор ставим в конец def
 				result = input.value.slice(
-					(lengthDifference < def && (cursorInpt + lengthDifference) <= def) ?
+					(lengthDifference < def && (cursor + lengthDifference) <= def) ?
 						def - lengthDifference : // начало и конец в зоне def
-						cursorInpt // начало где угодно, а конец после def
+						cursor // начало где угодно, а конец после def
 				).match(/\d/g) || [];
-			} else if (cursorInpt > def && first.length == two.length) { //ввод за def и было удаления символа маски вместо цифры
+			} else if (cursor > def && first.length == two.length) { //ввод за def и было удаления символа маски вместо цифры
 				// поэтому ищем первую цифру СЛЕВА от куросора и удаляем её					
 				let iBefore; // искомая позция цифры для последующего удаления
 				result = prev.replace(/\d/g, (a, i) => {
-					if (i < cursorInpt) {
+					if (i < cursor) {
 						iBefore = i; // последня сохранённая позиция и есть искомая цифра
-						cursorPos = i;
+						cursorSelection = i;
 						return a
 					} else return a
 				}).replace(/\d/g, (a, i) => (i == iBefore) ? "" : a) // удаляем найденную цифру
 					.slice(def).match(/\d/g) || [];
 			} else { //ввод за def и было удаления цифры
-				cursorPos = cursorInpt; // курсор оставляем в selectionStart
+				cursorSelection = cursor; // курсор оставляем в selectionStart
 				result = input.value.slice(def).match(/\d/g) || [];
 			}
 
 		} else if (event.inputType == 'deleteContentForward') { //? удаление клавишей DELETE
 			//! все множественные вырезания кливишей DELETE - срабатывает "deleteContentBackward"  - смотри выше (логика как и при deleteByCut)
-			if (cursorInpt < def) {
+			if (cursor < def) {
 				result = input.value.slice(
-					(cursorInpt <= posLastNumMask) ? def - 1 // уменьшаем def и сохраняем все ццифры	
+					(cursor <= posLastNumMask) ? def - 1 // уменьшаем def и сохраняем все ццифры	
 						: def
 				).match(/\d/g) || [];
-				cursorPos = def; // курсор ставим в конец def
-			} else if (cursorInpt >= (def) && first.length == two.length) { //ввод за def и было удаления символа маски вместо цифры
+				cursorSelection = def; // курсор ставим в конец def
+			} else if (cursor >= (def) && first.length == two.length) { //ввод за def и было удаления символа маски вместо цифры
 				// поэтому ищем первую цифру СПРАВА от куросора и удаляем её
 				let del = true; // после удаления одной искомой цифры переводим в false, чтобы не удалить остальные
 				result = prev.replace(/\d/g, (a, i) => {
-					if (i > cursorInpt && del) {
+					if (i > cursor && del) {
 						del = false;
-						cursorPos = i;
+						cursorSelection = i;
 						return ""
 					} else return a
 				}).slice(def).match(/\d/g) || []; // из полученной строки получаем результат (цифры массивом за минусом def)
 			} else { // ввод за def и + не было удаления символа маски
-				cursorPos = cursorInpt; // курсор оставляем в selectionStart
+				cursorSelection = cursor; // курсор оставляем в selectionStart
 				result = input.value.slice(def).match(/\d/g) || [];
 			}
 
 		} else if (event.inputType == 'deleteByCut') { //? удаление клавишей ВЫРЕЗАНИЕМ
-			if (cursorInpt < def) {
-				cursorPos = def;
+			if (cursor < def) {
+				cursorSelection = def;
 				result = input.value.slice(
-					(lengthDifference < def && (cursorInpt + lengthDifference) <= def) ? def - lengthDifference : // начало и конец в зоне def
-						cursorInpt // начало где угодно, а конец после def
+					(lengthDifference < def && (cursor + lengthDifference) <= def) ? def - lengthDifference : // начало и конец в зоне def
+						cursor // начало где угодно, а конец после def
 				).match(/\d/g) || [];
 			} else {
-				cursorPos = cursorInpt; // курсор оставляем в selectionStart
+				cursorSelection = cursor; // курсор оставляем в selectionStart
 				result = input.value.slice(def).match(/\d/g) || [];
 			}
 		} else if (event.inputType == 'insertText') {
 			result = input.value.slice(def).match(/\d/g) || [];
-			cursorPos = cursorInpt
+			cursorSelection = cursor
 		} else if (event.inputType == 'insertFromPaste') {
 			result = input.value.slice(def).match(/\d/g) || [];
-			cursorPos = cursorInpt
+			cursorSelection = cursor
 		}
 	}
-	*/
 
 	let obj = {};
 	obj.getValue = result; // цифры массивом (!!! цифры из маски не учитываются !!!)
-	obj.cursorPos = cursorPos;
+	obj.cursorSelection = cursorSelection;
 	return obj
 };
 //===========================================================
@@ -334,7 +287,3 @@ function findLastNumMask(mask) {
 	return pos;
 }
 //==============================================================
-
-
-
-
