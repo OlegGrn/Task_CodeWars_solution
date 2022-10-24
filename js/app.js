@@ -104,22 +104,14 @@ function getValueInput(options) {
 	// строка между ними  - это то что ввёл юзер newNumber  
 	let newNumber = input.value.slice(cursorStart, cursorInpt).replace(/\D/g, "");
 
-	let add = 0; //добавочная цифра для корректировки nextValOne и nextValTwo чтобы можно было удалить цирфу за/перед пробелами
+	//добавочная цифра для корректировки nextValOne и nextValTwo чтобы можно было удалить цирфу за/перед пробелами
 	// условие cursorStart == cursorEnd - был введен всего один символ (выделения не было)
 	// условие newNumber.length == 0 - не было введено никаких новых цифр
-	if (newNumber.length == 0 && cursorStart == cursorEnd) {
-		add = (cursorInpt < cursorEnd) ? shiftLeft(options) : shiftRight(options);
-	}
-
-	//!==================================================
-	let add_two = (newNumber.length == 0 && cursorStart == cursorEnd) ? setShift(options, newNumber) : 0;
-	//!==================================================
+	let add = (newNumber.length == 0 && cursorStart == cursorEnd) ? setShift(options, newNumber) : 0;
 
 	let nextValOne = input.value.slice(0, (cursorStart > cursorInpt) ? cursorInpt - add : cursorStart);
-
 	let nextValTwo = input.value.slice((cursorEnd < def) ? cursorInpt + (def - cursorEnd) :
 		(cursorInpt + ((cursorInpt < cursorEnd && add != 0) ? 0 : add)));
-
 	let nextVal = nextValOne + newNumber + nextValTwo;
 
 	console.log(`${newNumber} - новые цифры/ ${add} = add / ${nextValOne} nextValOne / ${nextValTwo} nextValTwo `);
@@ -131,64 +123,61 @@ function getValueInput(options) {
 		(start < def) ? start : def
 	).match(/\d/g) || [];
 
-
 	let cursorPos = setCursor(options, newNumber);
-
-
 
 	let obj = {};
 	obj.getValue = result; // цифры массивом (!!! цифры из маски не учитываются !!!)
 	obj.cursorPos = cursorPos;
 	return obj
 };
-//! находим смещение  ************/
-function setShift(options, newNumber) {
-	let { input, mask, event, cursorStart, cursorEnd } = options;
-	let oneNumMask = mask.indexOf("_");
-	let cursorInpt = input.selectionStart; // положение курсора при событии
-	let pos;
-
-	if (cursorInpt < cursorEnd) {
-		pos = mask.lastIndexOf("_", cursorInpt);
-	} else if (cursorInpt == cursorEnd) {
-
-	}
-}
-//!==================================================
-
 
 //* устанавливает курсор ======================
 
 function setCursor(options, newNumber) {
 	let { input, mask, event, cursorStart, cursorEnd } = options;
 	let cursorInpt = input.selectionStart; // положение курсора при событии
-	let cursorPos; // по коду при необходимости получает цифру куда переставить курсор
+	let result;
 
 	if (cursorEnd == cursorStart) {
 		if (cursorInpt == cursorEnd) {
-			cursorPos = mask.indexOf("_", cursorEnd);
+			result = mask.indexOf("_", cursorEnd)
 		} else if (cursorInpt < cursorEnd) {
-			cursorPos = mask.lastIndexOf("_", cursorInpt)
+			result = mask.lastIndexOf("_", cursorInpt)
 		} else {
-			cursorPos = mask.indexOf("_", cursorInpt);
+			result = mask.indexOf("_", cursorInpt)
 		}
 	} else if (newNumber) {
 		let unlock = mask
 			.substring(cursorStart, cursorEnd)
 			.includes("_");
-		cursorPos = (unlock) ? mask.indexOf("_", cursorInpt) :
-			(mask.indexOf("_", cursorInpt) + 1);
-
+		result = (unlock) ? mask.indexOf("_", cursorInpt) :
+			(mask.indexOf("_", cursorInpt) + 1)
 	} else {
-		cursorPos = mask.indexOf("_", cursorInpt);
+		result = mask.indexOf("_", cursorInpt)
 	}
-
-	return cursorPos;
+	return result;
 }
 
+//* находим смещение left or right ************/
+function setShift(options, newNumber) {
+	let { input, mask, event, cursorStart, cursorEnd } = options;
+	let oneNumMask = mask.indexOf("_");
+	let cursorInpt = input.selectionStart; // положение курсора при событии
+	let result;
+	if (cursorInpt < cursorEnd) { // сдвиг влево
+		let pos = mask.lastIndexOf("_", cursorInpt);
+		result = (pos == -1) ? 0 : cursorInpt - pos;
+	} else if (cursorInpt == cursorEnd) { // сдвиг вправо
+		let pos = mask.indexOf("_", cursorEnd);
+		result = (pos <= oneNumMask) ? 0 : pos - cursorEnd;
+	}
+	return result
+}
+//!==================================================
 
 //===========================================================
 //**** находим добавочный add для смещения влево */
+/*
 function shiftLeft(options) {
 
 	let { input, mask, event, cursorStart, cursorEnd } = options;
@@ -217,70 +206,21 @@ function shiftRight(options) {
 	return (pos <= oneNumMask) ? 0 : pos - cursorEnd;
 }
 
+*/
+
 //***** формирует новое значение инпута (заменяет "_" из маски на цифры из getValue и отрезает незаполненные "_") ****
 function madeNewValue(mask, getValue) {
 	let i = 0;
 	let mask_value = mask.replace(/[_]/g, (a) => (i < getValue.length) ? getValue[i++] : a); // заменяем "_" из маски на цифры из getValue
+
 	let emptyPos = mask_value.indexOf('_');  // получаем позицию не заполненных "_" из маски
 	return (emptyPos == -1) ? mask_value : mask_value.slice(0, emptyPos); // отрезаем пустые "_" 
+
+	//return mask_value
 }
 //+++++++++++++++++++++++++++++++++++++++++++
-/*
-//**** ищет позицю для курсора при вводе в инпут ********************
-function findPosNumRight(mask, cursor, val, prev, newVal) {
-	const posLastNumMask = findLastNumMask(mask);// позциция последней цифры в def маски
-	const def = mask.slice(0, mask.indexOf("_")).length; // длина дефолтного начала маски
-	let quantity = val.length - prev.length; // количество введенных знаков
-	let start = (quantity > 0) ? cursor - quantity : 0; // позция начала их ввода
-
-	let result;
-	let count;// вспомогательная
-	let looking = true; // вспомогательная
-	newVal.replace(/\d/g, (a, i) => {
-		if (i >= start && looking && i > posLastNumMask) {
-			looking = false;
-			count = 1;
-			result = ++i;
-		} else if (!looking && count < quantity) {
-			count++;
-			result = ++i
-		}
-	})
-	if (prev.length == newVal.length) {
-		//result = start; //!подумать как исправить ошибку при вводе цифр с пробелами
-		//! наверное quantity надо переделать (учитывать только введённые цифры, а не знаки)
-	}
-	return (start <= posLastNumMask) ? def : result;// при условии что ввод цифр в зоне def игнорируется
-	// при условии что ввод цифра срабатывает всегда (даже в зоне цифр def) //return result;
-}
-*/
-//===============================================================
-
-
-
-
 
 /*
-	let nextValOne = input.value.slice(0, (cursorStart > cursorInpt) ? cursorInpt : cursorStart);
-	let nextValTwo = (cursorInpt > cursorEnd) ?
-		input.value.slice(
-			//(cursorEnd < def) ? (cursorInpt - cursorStart) + (def - (cursorEnd - cursorStart)) : cursorInpt
-			(cursorEnd < def) ? cursorInpt + (def - cursorEnd) : cursorInpt
-		) :
-		(cursorInpt < cursorEnd) ?
-			input.value.slice(
-				(cursorEnd < def) ? cursorInpt + (def - cursorEnd) : cursorInpt
-			) :
-			(cursorInpt == cursorEnd) ?
-				input.value.slice(
-					(cursorEnd < def) ? cursorInpt + (def - cursorEnd) : cursorInpt
-				) :
-				0;
-	*/
-
-
-/*
-
 window.addEventListener("DOMContentLoaded", function () {
 [].forEach.call(document.querySelectorAll('.tel'), function (input) {
 	var keyCode;
@@ -315,7 +255,5 @@ window.addEventListener("DOMContentLoaded", function () {
 	input.addEventListener("keydown", mask, false)
 
 });
-
 });
-
 */
