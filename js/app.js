@@ -12,7 +12,7 @@ const setInputCheek = {
 	phoneRuMobile: { // на российские мобильные + городские с кодом из 3 цифр  
 		set: /^((8|\+7)[\- ]?)?(\(?\d{3}\)?[\- ]?)?[\d\- ]{7,10}$/,
 		help: "Российские мобильные",
-		mask: '+7(___)   ___    __'
+		mask: '+7 (___) ___ __ __'
 	},
 	class_remove: new Set() // коллекция классов для последующей очистки формы
 }
@@ -25,7 +25,9 @@ document.addEventListener("DOMContentLoaded", () => {
 			(input.getAttribute('data-mask-phone')) ? input.getAttribute('data-mask-phone') :
 				(input.name && setInputCheek) ? setInputCheek[input.name].mask : "";
 		// получаем маску		
-		const mask = getMaskPhone(input);
+		let mask = getMaskPhone(input);
+		let quantityNum = mask.replace(/[^_]/g, "").length; // количество цифр ввода в маску
+		let def = mask.slice(0, mask.indexOf("_")).length; // длина дефолтного начала маски 
 
 		let cursorStart;
 		let cursorEnd;
@@ -40,15 +42,17 @@ document.addEventListener("DOMContentLoaded", () => {
 			cursorEnd = input.selectionEnd;
 		});
 
-		input.addEventListener('input', (event) => maskPhoneInput({ input, mask, event, cursorStart, cursorEnd }));
-		input.addEventListener('focus', () => maskPhoneFocus({ input, mask }));
-		//input.addEventListener('blur', () => maskPhoneBlur(input, mask));
+		input.addEventListener('input', () => maskPhoneInput({ input, mask, cursorStart, cursorEnd, def, quantityNum }));
+		input.addEventListener('focus', () => maskPhoneFocus({ input, mask, cursorStart, cursorEnd, def, quantityNum }));
+		//input.addEventListener('blur', () => maskPhoneBlur({ input, mask, cursorStart, cursorEnd, def, quantityNum }));
 	})
 
 });
 //* ======= фокус на инпуте =====================
 function maskPhoneFocus(options) {
+
 	let { input, mask } = options;
+
 	const begining = mask.slice(0, mask.indexOf("_"));
 	input.value = (input.value < begining.length) ? begining : input.value;
 
@@ -57,7 +61,10 @@ function maskPhoneFocus(options) {
 	}, 0)
 }
 //* ======= потеря фокуса =======================
-function maskPhoneBlur(input, mask) {
+function maskPhoneBlur(options) {
+
+	let { input, mask } = options;
+
 	const clearPhoneBlur = input.classList.contains('required');
 	input.value = (input.value.length == mask.length) ? input.value :
 		(clearPhoneBlur) ? "" : input.value;
@@ -75,14 +82,14 @@ function getMaskPhone(input) {
 
 function maskPhoneInput(options) {
 
-	let { input, mask, event, cursorStart, cursorEnd } = options;
+	let { input, mask, cursorStart, cursorEnd } = options;
 
 	console.log(options);
 	console.log(`CursorStart - ${cursorStart} \ cursorEnd - ${cursorEnd} \\\ cursorInpt - ${input.selectionStart}`);
 	console.log(`-${input.value}- тукщий инпут. `)
 
 	// получаем введные цифры из инпута массивом + положение курсора (или undifinded)	
-	let { getValue, cursorPos } = getValueInput({ input, mask, event, cursorStart, cursorEnd });
+	let { getValue, cursorPos } = getValueInput(options);
 	let newInputValue = madeNewValue(mask, getValue); // новое значение инпута 
 
 	input.value = newInputValue;
@@ -96,10 +103,9 @@ function maskPhoneInput(options) {
 
 function getValueInput(options) {
 
-	let { input, mask, event, cursorStart, cursorEnd } = options;
-	let cursorInpt = input.selectionStart; // положение курсора при событии
-	const def = mask.slice(0, mask.indexOf("_")).length; // длина дефолтного начала маски 
+	let { input, cursorStart, cursorEnd, def } = options;
 
+	let cursorInpt = input.selectionStart; // положение курсора при событии
 	// cursorStart - начало ввода (если ранее было выделение - начало выделения), cursorInpt - окончание ввода
 	// строка между ними  - это то что ввёл юзер newNumber  
 	let newNumber = input.value.slice(cursorStart, cursorInpt).replace(/\D/g, "");
@@ -107,7 +113,8 @@ function getValueInput(options) {
 	//добавочная цифра для корректировки nextValOne и nextValTwo чтобы можно было удалить цирфу за/перед пробелами
 	// условие cursorStart == cursorEnd - был введен всего один символ (выделения не было)
 	// условие newNumber.length == 0 - не было введено никаких новых цифр
-	let add = (newNumber.length == 0 && cursorStart == cursorEnd) ? setShift(options, newNumber) : 0;
+
+	let add = (newNumber.length == 0 && cursorStart == cursorEnd) ? setShift(options) : 0;
 
 	let nextValOne = input.value.slice(0, (cursorStart > cursorInpt) ? cursorInpt - add : cursorStart);
 	let nextValTwo = input.value.slice((cursorEnd < def) ? cursorInpt + (def - cursorEnd) :
@@ -134,33 +141,33 @@ function getValueInput(options) {
 //* устанавливает курсор ======================
 
 function setCursor(options, newNumber) {
-	let { input, mask, event, cursorStart, cursorEnd } = options;
-	let cursorInpt = input.selectionStart; // положение курсора при событии
+	let { input, mask, cursorStart, cursorEnd, def } = options;
+	let cursorInpt = input.selectionStart; // положение курсора при событии	
 	let result;
 
 	if (cursorEnd == cursorStart) {
 		if (cursorInpt == cursorEnd) {
 			result = mask.indexOf("_", cursorEnd)
 		} else if (cursorInpt < cursorEnd) {
-			result = mask.lastIndexOf("_", cursorInpt)
+			result = (cursorInpt < def) ? def : mask.lastIndexOf("_", cursorInpt)
 		} else {
 			result = mask.indexOf("_", cursorInpt)
 		}
-	} else if (newNumber) {
-		let unlock = mask
+	} else if (newNumber && cursorEnd != cursorStart) {
+		let hold = mask
 			.substring(cursorStart, cursorEnd)
 			.includes("_");
-		result = (unlock) ? mask.indexOf("_", cursorInpt) :
+		result = (hold) ? mask.indexOf("_", cursorInpt) :
 			(mask.indexOf("_", cursorInpt) + 1)
 	} else {
-		result = mask.indexOf("_", cursorInpt)
+		result = mask.indexOf("_", cursorInpt);
 	}
 	return result;
 }
 
 //* находим смещение left or right ************/
-function setShift(options, newNumber) {
-	let { input, mask, event, cursorStart, cursorEnd } = options;
+function setShift(options) {
+	let { input, mask, cursorEnd } = options;
 	let oneNumMask = mask.indexOf("_");
 	let cursorInpt = input.selectionStart; // положение курсора при событии
 	let result;
@@ -173,8 +180,17 @@ function setShift(options, newNumber) {
 	}
 	return result
 }
-//!==================================================
 
+//***** формирует новое значение инпута (заменяет "_" из маски на цифры из getValue и отрезает незаполненные "_") ****
+function madeNewValue(mask, getValue) {
+	let i = 0;
+	let mask_value = mask.replace(/[_]/g, (a) => (i < getValue.length) ? getValue[i++] : a); // заменяем "_" из маски на цифры из getValue
+
+	let emptyPos = mask_value.indexOf('_');  // получаем позицию не заполненных "_" из маски
+	return (emptyPos == -1) ? mask_value : mask_value.slice(0, emptyPos); // отрезаем пустые "_" 
+
+	//return mask_value
+}
 //===========================================================
 //**** находим добавочный add для смещения влево */
 /*
@@ -183,9 +199,9 @@ function shiftLeft(options) {
 	let { input, mask, event, cursorStart, cursorEnd } = options;
 	let cursorInpt = input.selectionStart; // положение курсора при событии
 
-	//let unLock = (mask.substring(cursorInpt, cursorEnd)) !== "_"; // если true - было удаление пустоты 
-	// let pos = (unLock) ? mask.lastIndexOf("_", cursorInpt) : -1;
-	// return (pos == -1) ? 0 : cursorInpt - pos;
+	let unLock = (mask.substring(cursorInpt, cursorEnd)) !== "_"; // если true - было удаление пустоты
+	 let pos = (unLock) ? mask.lastIndexOf("_", cursorInpt) : -1;
+	 return (pos == -1) ? 0 : cursorInpt - pos;
 
 	let pos = mask.lastIndexOf("_", cursorInpt);
 
@@ -199,8 +215,8 @@ function shiftRight(options) {
 	let { input, mask, event, cursorStart, cursorEnd } = options;
 	let oneNumMask = mask.indexOf("_");
 
-	// let unLock = (mask.substring(cursorEnd, cursorEnd + 1)) !== "_"; // если true - было удаление пустоты 
-	// let pos = (unLock) ? mask.indexOf("_", cursorEnd) : -1;
+	 let unLock = (mask.substring(cursorEnd, cursorEnd + 1)) !== "_"; // если true - было удаление пустоты
+	 let pos = (unLock) ? mask.indexOf("_", cursorEnd) : -1;
 
 	let pos = mask.indexOf("_", cursorEnd);
 	return (pos <= oneNumMask) ? 0 : pos - cursorEnd;
@@ -208,16 +224,7 @@ function shiftRight(options) {
 
 */
 
-//***** формирует новое значение инпута (заменяет "_" из маски на цифры из getValue и отрезает незаполненные "_") ****
-function madeNewValue(mask, getValue) {
-	let i = 0;
-	let mask_value = mask.replace(/[_]/g, (a) => (i < getValue.length) ? getValue[i++] : a); // заменяем "_" из маски на цифры из getValue
 
-	let emptyPos = mask_value.indexOf('_');  // получаем позицию не заполненных "_" из маски
-	return (emptyPos == -1) ? mask_value : mask_value.slice(0, emptyPos); // отрезаем пустые "_" 
-
-	//return mask_value
-}
 //+++++++++++++++++++++++++++++++++++++++++++
 
 /*
