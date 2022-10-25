@@ -26,7 +26,6 @@ document.addEventListener("DOMContentLoaded", () => {
 				(input.name && setInputCheek) ? setInputCheek[input.name].mask : "";
 		// получаем маску		
 		let mask = getMaskPhone(input);
-		let quantityNum = mask.replace(/[^_]/g, "").length; // количество цифр ввода в маску
 		let def = mask.slice(0, mask.indexOf("_")).length; // длина дефолтного начала маски 
 
 		let cursorStart;
@@ -42,9 +41,9 @@ document.addEventListener("DOMContentLoaded", () => {
 			cursorEnd = input.selectionEnd;
 		});
 
-		input.addEventListener('input', () => maskPhoneInput({ input, mask, cursorStart, cursorEnd, def, quantityNum }));
-		input.addEventListener('focus', () => maskPhoneFocus({ input, mask, cursorStart, cursorEnd, def, quantityNum }));
-		//input.addEventListener('blur', () => maskPhoneBlur({ input, mask, cursorStart, cursorEnd, def, quantityNum }));
+		input.addEventListener('input', () => maskPhoneInput({ input, mask, cursorStart, cursorEnd, def }));
+		input.addEventListener('focus', () => maskPhoneFocus({ input, mask, cursorStart, cursorEnd, def }));
+		//input.addEventListener('blur', () => maskPhoneBlur({ input, mask, cursorStart, cursorEnd, def }));
 	})
 
 });
@@ -82,21 +81,43 @@ function getMaskPhone(input) {
 
 function maskPhoneInput(options) {
 
-	let { input, mask, cursorStart, cursorEnd } = options;
+	let { input, mask, cursorStart, cursorEnd, def } = options;
+
+	let enterNumMask = mask.replace(/[^_]/g, "").length; // количество цифр ввода в маску
+	let maskNumDef = mask.slice(0, def).replace(/\D/g, '').length // количество цифр в маскe
+	let allNumMask = enterNumMask + maskNumDef;
+	let allNumInput = input.value.replace(/\D/g, "").length; // количество цифр в инпуте
 
 	console.log(options);
 	console.log(`CursorStart - ${cursorStart} \ cursorEnd - ${cursorEnd} \\\ cursorInpt - ${input.selectionStart}`);
-	console.log(`-${input.value}- тукщий инпут. `)
+	console.log(`-${input.value}- тукщий инпут. \  `)
 
+	if (allNumInput <= allNumMask) {
+		// получаем введные цифры из инпута массивом + положение курсора (или undifinded)	
+		let { getValue, cursorPos } = getValueInput(options);
+		let newInputValue = madeNewValue(mask, getValue); // новое значение инпута 
+		input.value = newInputValue;
+		maskPhoneInput.value = newInputValue;
+		// схлопываем курсор и выставляем его по cursorPos
+		if (cursorPos != undefined) {
+			input.selectionStart = input.selectionEnd = cursorPos;
+		}
+	} else {
+		input.value = maskPhoneInput.value
+		input.selectionStart = input.selectionEnd = cursorStart;
+	}
+
+	/*
 	// получаем введные цифры из инпута массивом + положение курсора (или undifinded)	
-	let { getValue, cursorPos } = getValueInput(options);
-	let newInputValue = madeNewValue(mask, getValue); // новое значение инпута 
+	//let { getValue, cursorPos } = getValueInput(options);
+	//let newInputValue = madeNewValue(mask, getValue); // новое значение инпута 
 
 	input.value = newInputValue;
 	// схлопываем курсор и выставляем его по cursorPos
 	if (cursorPos != undefined) {
 		input.selectionStart = input.selectionEnd = cursorPos;
 	}
+	*/
 }
 
 //*** получаем введные цифры из инпута массивом в правильном порядке + положение курсора (или undifinded)
@@ -151,14 +172,16 @@ function setCursor(options, newNumber) {
 		} else if (cursorInpt < cursorEnd) {
 			result = (cursorInpt < def) ? def : mask.lastIndexOf("_", cursorInpt)
 		} else {
-			result = mask.indexOf("_", cursorInpt)
+			let hold = mask
+				.substring(cursorStart, cursorInpt)
+				.includes("_");
+			result = (hold) ? mask.indexOf("_", cursorInpt) : (mask.indexOf("_", cursorInpt) + 1);
 		}
 	} else if (newNumber && cursorEnd != cursorStart) {
 		let hold = mask
 			.substring(cursorStart, cursorEnd)
 			.includes("_");
-		result = (hold) ? mask.indexOf("_", cursorInpt) :
-			(mask.indexOf("_", cursorInpt) + 1)
+		result = (hold) ? mask.indexOf("_", cursorInpt) : (mask.indexOf("_", cursorInpt) + 1)
 	} else {
 		result = mask.indexOf("_", cursorInpt);
 	}
