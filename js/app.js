@@ -26,7 +26,8 @@ document.addEventListener("DOMContentLoaded", () => {
 				(input.name && setInputCheek) ? setInputCheek[input.name].mask : "";
 		// получаем маску		
 		let mask = getMaskPhone(input);
-		let def = mask.slice(0, mask.indexOf("_")).length; // длина дефолтного начала маски 
+		let def = mask.slice(0, mask.indexOf("_")).length; // длина дефолтного начала маски
+		let numMask = countNumMask(mask, def);// количество цифр маске
 
 		let cursorStart;
 		let cursorEnd;
@@ -41,9 +42,11 @@ document.addEventListener("DOMContentLoaded", () => {
 			cursorEnd = input.selectionEnd;
 		});
 
-		input.addEventListener('input', () => maskPhoneInput({ input, mask, cursorStart, cursorEnd, def }));
-		input.addEventListener('focus', () => maskPhoneFocus({ input, mask, cursorStart, cursorEnd, def }));
-		//input.addEventListener('blur', () => maskPhoneBlur({ input, mask, cursorStart, cursorEnd, def }));
+		maskPhoneInput = wrap(maskPhoneInput);
+
+		input.addEventListener('input', () => maskPhoneInput({ input, mask, cursorStart, cursorEnd, def, numMask }));
+		input.addEventListener('focus', () => maskPhoneFocus({ input, mask, cursorStart, cursorEnd, def, numMask }));
+		//input.addEventListener('blur', () => maskPhoneBlur({ input, mask, cursorStart, cursorEnd, def, numMask }));
 	})
 
 });
@@ -77,73 +80,79 @@ function getMaskPhone(input) {
 	return (input.getAttribute('data-mask-phone')) ? input.getAttribute('data-mask-phone') :
 		(input.name && setInputCheek) ? setInputCheek[input.name].mask : defolt;
 }
+
+//* количество цифр в маске 
+
+function countNumMask(mask, def) {
+	let enterNumMask = mask.replace(/[^_]/g, "").length; // количество цифр ввода в маску
+	let maskNumDef = mask.slice(0, def).replace(/\D/g, '').length // количество цифр в маскe
+	return enterNumMask + maskNumDef;
+}
+
+//* обёртка для maskPhoneInput - алгоритм блокировки ввода значений при переполенении инпута
+
+function wrap(func) {
+
+	let owldValue;
+	let unlock;
+
+	return function (options) {
+
+		//! реагирует на буквы !!!!!!!! испраивить
+
+		let { input, cursorStart, cursorEnd, numMask } = options;
+
+
+		let numInput = input.value.replace(/\D/g, "").length; // количество цифр в инпуте
+		//let numInput = input.value.length; // количество цифр в инпуте
+		console.log(`numInput.length ${numInput}`);
+
+		unlock = (numInput > numMask) ? false : true;
+
+		if (cursorStart == cursorEnd && unlock) {
+			owldValue = func(options);
+			console.log('opa');
+
+		} else if (cursorStart != cursorEnd) {
+			owldValue = func(options);
+
+		} else {
+
+
+			input.value = owldValue;
+			input.selectionStart = input.selectionEnd = cursorStart;
+		}
+	}
+}
+
 //* =======  устанавливает маску ввода телефона =========================
 
 function maskPhoneInput(options) {
 
-	let { input, mask, cursorStart, cursorEnd, def } = options;
-
-	let enterNumMask = mask.replace(/[^_]/g, "").length; // количество цифр ввода в маску
-	let maskNumDef = mask.slice(0, def).replace(/\D/g, '').length // количество цифр в маскe
-	let allNumMask = enterNumMask + maskNumDef;
-	let allNumInput = input.value.replace(/\D/g, "").length; // количество цифр в инпуте
+	let { input, mask, cursorStart, cursorEnd } = options;
 
 	console.log(options);
 	console.log(`CursorStart - ${cursorStart} \ cursorEnd - ${cursorEnd} \\\ cursorInpt - ${input.selectionStart}`);
 	console.log(`-${input.value}- тукщий инпут. \  `)
 
-	if (allNumInput <= allNumMask) {
-		// получаем введные цифры из инпута массивом + положение курсора (или undifinded)	
-		let { getValue, cursorPos } = getValueInput(options);
-		let newInputValue = madeNewValue(mask, getValue); // новое значение инпута 
-		input.value = newInputValue;
-		maskPhoneInput.value = newInputValue;
-		// схлопываем курсор и выставляем его по cursorPos
-		if (cursorPos != undefined) {
-			input.selectionStart = input.selectionEnd = cursorPos;
-		}
-	} else {
-		input.value = maskPhoneInput.value
-		input.selectionStart = input.selectionEnd = cursorStart;
-	}
-
-	/*
-	// получаем введные цифры из инпута массивом + положение курсора (или undifinded)	
-	//let { getValue, cursorPos } = getValueInput(options);
-	//let newInputValue = madeNewValue(mask, getValue); // новое значение инпута 
-
-	input.value = newInputValue;
-	// схлопываем курсор и выставляем его по cursorPos
+	let { result: getValue, cursorPos } = getValueInput(options);
+	let newInputValue = madeNewValue(mask, getValue); // вычисляем новое значение инпута 	
+	input.value = newInputValue; // устанавливаем новое значение инпута 
 	if (cursorPos != undefined) {
 		input.selectionStart = input.selectionEnd = cursorPos;
 	}
-	*/
+	return newInputValue
 }
 
-//*** получаем введные цифры из инпута массивом в правильном порядке + положение курсора (или undifinded)
+
+//*** получаем введные цифры из инпута массивом в правильном порядке + положение курсора (или undifinded)\
 
 function getValueInput(options) {
 
-	let { input, cursorStart, cursorEnd, def } = options;
+	let { input, cursorStart, def } = options;
 
-	let cursorInpt = input.selectionStart; // положение курсора при событии
-	// cursorStart - начало ввода (если ранее было выделение - начало выделения), cursorInpt - окончание ввода
-	// строка между ними  - это то что ввёл юзер newNumber  
-	let newNumber = input.value.slice(cursorStart, cursorInpt).replace(/\D/g, "");
-
-	//добавочная цифра для корректировки nextValOne и nextValTwo чтобы можно было удалить цирфу за/перед пробелами
-	// условие cursorStart == cursorEnd - был введен всего один символ (выделения не было)
-	// условие newNumber.length == 0 - не было введено никаких новых цифр
-
-	let add = (newNumber.length == 0 && cursorStart == cursorEnd) ? setShift(options) : 0;
-
-	let nextValOne = input.value.slice(0, (cursorStart > cursorInpt) ? cursorInpt - add : cursorStart);
-	let nextValTwo = input.value.slice((cursorEnd < def) ? cursorInpt + (def - cursorEnd) :
-		(cursorInpt + ((cursorInpt < cursorEnd && add != 0) ? 0 : add)));
-	let nextVal = nextValOne + newNumber + nextValTwo;
-
-	console.log(`${newNumber} - новые цифры/ ${add} = add / ${nextValOne} nextValOne / ${nextValTwo} nextValTwo `);
-	console.log(`${nextVal} - новое значение инпута`);
+	let cursorInpt = input.selectionStart; // положение курсора при событии	
+	let { nextVal, newNumber } = getNextVal(options);
 
 	// отрезаем из полученной строки nextVal значение def и получем из неё цирфы массимов в правильном порядке
 	let start = (cursorStart < cursorInpt) ? cursorStart : cursorInpt;
@@ -152,12 +161,35 @@ function getValueInput(options) {
 	).match(/\d/g) || [];
 
 	let cursorPos = setCursor(options, newNumber);
-
-	let obj = {};
-	obj.getValue = result; // цифры массивом (!!! цифры из маски не учитываются !!!)
-	obj.cursorPos = cursorPos;
-	return obj
+	return { result, cursorPos }
 };
+
+function getNextVal(options) {
+
+	let { input, cursorStart, cursorEnd, def } = options;
+	let cursorInpt = input.selectionStart;
+
+	// cursorStart - начало ввода (если ранее было выделение - начало выделения), cursorInpt - окончание ввода
+	// строка между ними  - это то что ввёл юзер newNumber  
+	let newNumber = input.value.slice(cursorStart, cursorInpt).replace(/\D/g, "");
+
+	//добавочная цифра для корректировки nextValOne и nextValTwo чтобы можно было удалить цирфу за/перед пробелами
+	// условие cursorStart == cursorEnd - был введен всего один символ (выделения не было)
+	// условие newNumber.length == 0 - не было введено никаких новых цифр
+	let add = (newNumber.length == 0 && cursorStart == cursorEnd) ? setShift(options) : 0;
+
+	let nextValOne = input.value.slice(0, (cursorStart > cursorInpt) ? cursorInpt - add : cursorStart);
+	let nextValTwo = input.value.slice((cursorEnd < def) ? cursorInpt + (def - cursorEnd) :
+		(cursorInpt + ((cursorInpt < cursorEnd && add != 0) ? 0 : add)));
+	let nextVal = nextValOne + newNumber + nextValTwo;
+
+	// console.log(`${newNumber} - новые цифры/ ${add} = add / ${nextValOne} nextValOne / ${nextValTwo} nextValTwo `);
+	// console.log(`${nextVal} - новое значение инпута`);
+
+	return { nextVal, newNumber }
+}
+
+
 
 //* устанавливает курсор ======================
 
