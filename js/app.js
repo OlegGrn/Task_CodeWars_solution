@@ -105,7 +105,7 @@ function wrap(func) {
 		let cursorInpt = input.selectionStart; // положение курсора при событии		
 		let newNumber = input.value.slice(cursorStart, input.selectionStart).replace(/\D/g, "");
 		let numInput = input.value.replace(/\D/g, "").length; // всего количество цифр в инпуте
-		let wasDel = (cursorInpt < cursorStart) ? true : false; // было удаление
+		let wasDel = (cursorInpt <= cursorStart) ? true : false; // было удаление
 		let wasEnterNum = (newNumber.length > 0) ? true : false; // была введена цифра
 
 		//console.log(`${input.value} ${input.value.replace(/\D/g, "")}  numInput.length ${numInput} / numMask - ${numMask} / newNumber - ${newNumber} / CursorStart - ${cursorStart} \ cursorEnd - ${cursorEnd} \\\ cursorInpt - ${cursorInpt}`);
@@ -115,7 +115,7 @@ function wrap(func) {
 		} else { // введена НЕ цифра
 			unfull = (numInput >= numMask) ? false : true;
 		}
-		//console.log(` unfull ${unfull} `);
+		console.log(` unfull ${unfull} `);
 
 		if (cursorStart == cursorEnd) { //ввод одним знком или вставкой НО без прежнего выделения
 			if (unfull) { // в инпуте цифр меньше допустимого маской
@@ -138,6 +138,8 @@ function wrap(func) {
 					// вводилось одним знаком, но инпут уже был заполнен (иначе сработала бы ветка с условием unfull==true )
 					input.value = owldValue;
 					input.selectionStart = input.selectionEnd = cursorStart;
+
+					console.log("test")
 				}
 			}
 		} else if (cursorStart != cursorEnd) { // предварительно было веделение 
@@ -150,15 +152,17 @@ function wrap(func) {
 
 function maskPhoneInput(options, newNumber) {
 
-	let { input, mask } = options;
+	let { input, cursorStart, cursorEnd, numMask, mask, def } = options;
 
 	//console.log(options);
-	//console.log(`CursorStart - ${cursorStart} \ cursorEnd - ${cursorEnd} \\\ cursorInpt - ${input.selectionStart}`);
-	//console.log(`-${input.value}- тукщий инпут. \  `);
+	console.log(`CursorStart - ${cursorStart} \ cursorEnd - ${cursorEnd} \\\ cursorInpt - ${input.selectionStart}`);
+	console.log(`-${input.value}- тукщий инпут. \  `);
 
-	let { result: getValue, cursorPos } = getValueInput(options, newNumber);
+	// получаем введные цифры из инпута массивом в правильном порядке + положение курсора
+	let getValue = getValueInput(options, newNumber);
 	let newInputValue = madeNewValue(mask, getValue); // вычисляем новое значение инпута 	
 	input.value = newInputValue; // устанавливаем новое значение инпута 
+	let cursorPos = setCursor(options, newNumber);
 	if (cursorPos != undefined) {
 		input.selectionStart = input.selectionEnd = cursorPos;
 	}
@@ -188,8 +192,7 @@ function getValueInput(options, newNumber) {
 		(start < def) ? start : def
 	).match(/\d/g) || [];
 
-	let cursorPos = setCursor(options, newNumber);
-	return { result, cursorPos }
+	return result
 };
 
 //* устанавливает курсор ======================
