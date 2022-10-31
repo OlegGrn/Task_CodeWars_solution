@@ -148,8 +148,17 @@ h6 {
 	margin-bottom: 40px;
 }
 .form-test__input {
+	min-width: 300px;
 	font-size: 25px;
 	border: 1px solid #000000;
 	padding: 5px;
+	height: 100%;
+}
+.form-test__label {
+	display: inline-block;
+	font-size: 25px;
+	height: 40px;
+	position: relative;
+	
 }
 
