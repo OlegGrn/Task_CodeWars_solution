@@ -127,16 +127,14 @@ h6 {
 	padding: 25px 20px;
 	min-width: 300px;
 	transition: all 0.3s ease 0s;
-   background-color: rgba(238, 194, 194, 0.5);
+	background-color: rgba(238, 194, 194, 0.5);
 
-	
 	min-height: 100px;
 	width: 100%;
 	text-align: center;
 }
-.result_done  {
-   background-color: rgba(0, 128, 0, 0.2);
-
+.result_done {
+	background-color: rgba(0, 128, 0, 0.2);
 }
 
 .form-my {
@@ -146,19 +144,38 @@ h6 {
 .form-test {
 	text-align: center;
 	margin-bottom: 40px;
+
 }
 .form-test__input {
 	min-width: 300px;
-	font-size: 25px;
+	font-size: 35px;
+	line-height: 1.17;
 	border: 1px solid #000000;
 	padding: 5px;
 	height: 100%;
+	
 }
 .form-test__label {
 	display: inline-block;
-	font-size: 25px;
-	height: 40px;
+	min-height: 40px;	
 	position: relative;
+
+}
+.mask-shadow {
+	color: rgb(213, 101, 101);
+	text-align:  left;	
+}
+
+.form-test__input.mask-shadow {
 	
 }
+
+.mask-shadow__span_hiden {
+	opacity: 0;
+}
+
+.mask-shadow__span {
+	display: inline;
+}
+
 

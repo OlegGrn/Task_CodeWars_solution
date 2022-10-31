@@ -12,11 +12,14 @@ const setInputCheek = {
 	phoneRuMobile: { // на российские мобильные + городские с кодом из 3 цифр  
 		set: /^((8|\+7)[\- ]?)?(\(?\d{3}\)?[\- ]?)?[\d\- ]{7,10}$/,
 		help: "Российские мобильные",
-		mask: '+7 (___) __ __'
+		mask: '+7 (___) ___ - __ - __'
 	},
 	class_remove: new Set() // коллекция классов для последующей очистки формы
 }
 document.addEventListener("DOMContentLoaded", () => {
+
+
+	maskPhoneInput = wrapController(maskPhoneInput);
 
 	document.querySelectorAll('[data-mask-phone]').forEach(input => {
 
@@ -24,10 +27,16 @@ document.addEventListener("DOMContentLoaded", () => {
 		input.placeholder = (input.getAttribute('placeholder')) ? input.getAttribute('placeholder') :
 			(input.getAttribute('data-mask-phone')) ? input.getAttribute('data-mask-phone') :
 				(input.name && setInputCheek) ? setInputCheek[input.name].mask : "";
+
+
 		// получаем маску		
 		let mask = getMaskPhone(input);
 		let def = mask.slice(0, mask.indexOf("_")).length; // длина дефолтного начала маски
 		let numMask = countNumMask(mask, def);// количество цифр маске
+
+		// нужна или нет тень маски
+		let shadow = input.hasAttribute('data-mask-phone-shadow');
+		let cloneInput = (shadow) ? makeShadow({ input, mask, def }) : false; // делаем клон инпута и подрезаем на величину def
 
 		let cursorStart;
 		let cursorEnd;
@@ -42,18 +51,32 @@ document.addEventListener("DOMContentLoaded", () => {
 			cursorEnd = input.selectionEnd;
 		});
 
-		maskPhoneInput = wrap(maskPhoneInput);
-
-		input.addEventListener('input', () => maskPhoneInput({ input, mask, cursorStart, cursorEnd, def, numMask }));
-		input.addEventListener('focus', () => maskPhoneFocus({ input, mask, cursorStart, cursorEnd, def, numMask }));
-		//input.addEventListener('blur', () => maskPhoneBlur({ input, mask, cursorStart, cursorEnd, def, numMask }));
+		input.addEventListener('input', () => maskPhoneInput({ input, mask, cursorStart, cursorEnd, def, numMask, cloneInput }));
+		input.addEventListener('focus', () => maskPhoneFocus({ input, mask, cursorStart, cursorEnd, def, numMask, cloneInput }));
+		//input.addEventListener('blur', () => maskPhoneBlur({ input, mask, cursorStart, cursorEnd, def, numMask, cloneInput }));
 	})
 
 });
+
+//* ======= получаем маску для инпута 
+// либо из атрибута data-mask-phone или из setInputCheek или  defolt
+function getMaskPhone(input) {
+
+	let defolt = "+7(___) ___ ____";
+
+	return (input.getAttribute('data-mask-phone')) ? input.getAttribute('data-mask-phone') :
+		(input.name && setInputCheek) ? setInputCheek[input.name].mask : defolt;
+}
+
+
 //* ======= фокус на инпуте =====================
 function maskPhoneFocus(options) {
 
-	let { input, mask } = options;
+	let { input, mask, cloneInput } = options;
+
+	if (cloneInput) {
+		input.style.backgroundColor = "transparent";
+	}
 
 	const begining = mask.slice(0, mask.indexOf("_"));
 	input.value = (input.value < begining.length) ? begining : input.value;
@@ -71,15 +94,7 @@ function maskPhoneBlur(options) {
 	input.value = (input.value.length == mask.length) ? input.value :
 		(clearPhoneBlur) ? "" : input.value;
 }
-//* ======= получаем маску для инпута 
-// либо из атрибута data-mask-phone или из setInputCheek или  defolt
-function getMaskPhone(input) {
 
-	let defolt = "+7(___) ___ ____";
-
-	return (input.getAttribute('data-mask-phone')) ? input.getAttribute('data-mask-phone') :
-		(input.name && setInputCheek) ? setInputCheek[input.name].mask : defolt;
-}
 
 //* количество цифр в маске 
 
@@ -91,7 +106,7 @@ function countNumMask(mask, def) {
 
 //* обёртка для maskPhoneInput - алгоритм блокировки ввода значений при переполенении инпута
 
-function wrap(func) {
+function wrapController(func) {
 
 	let owldValue;
 	let unfull;
@@ -139,12 +154,14 @@ function wrap(func) {
 					input.value = owldValue;
 					input.selectionStart = input.selectionEnd = cursorStart;
 
-					console.log("test")
+
 				}
 			}
 		} else if (cursorStart != cursorEnd) { // предварительно было веделение 
 			owldValue = func(options, newNumber);
 		}
+
+
 	}
 }
 
@@ -160,7 +177,7 @@ function maskPhoneInput(options, newNumber) {
 
 	// получаем введные цифры из инпута массивом в правильном порядке + положение курсора
 	let getValue = getValueInput(options, newNumber);
-	let newInputValue = madeNewValue(mask, getValue); // вычисляем новое значение инпута 	
+	let newInputValue = madeNewValue(options, getValue); // вычисляем новое значение инпута 	
 	input.value = newInputValue; // устанавливаем новое значение инпута 
 	let cursorPos = setCursor(options, newNumber);
 	if (cursorPos != undefined) {
@@ -241,16 +258,74 @@ function setShift(options) {
 }
 
 //***** формирует новое значение инпута (заменяет "_" из маски на цифры из getValue и отрезает незаполненные "_") ****
-function madeNewValue(mask, getValue) {
+function madeNewValue(options, getValue) {
+	let { input, mask, cursorStart, cursorEnd, def, cloneInput } = options;
 	let i = 0;
 	let mask_value = mask.replace(/[_]/g, (a) => (i < getValue.length) ? getValue[i++] : a); // заменяем "_" из маски на цифры из getValue
-
 	let emptyPos = mask_value.indexOf('_');  // получаем позицию не заполненных "_" из маски
-	return (emptyPos == -1) ? mask_value : mask_value.slice(0, emptyPos); // отрезаем пустые "_" 
+
+	let val = (emptyPos == -1) ? mask_value : mask_value.slice(0, emptyPos); // отрезаем пустые "_" 
+
+	if (cloneInput) {
+		madeShadowInput(options, emptyPos, val)
+	}
+
+
+	return val
 
 	//return mask_value
 }
 
+//** подрезает тень в зависимости от заполнения инпута */
+
+function madeShadowInput(options, emptyPos, val) {
+	let { input, mask, cursorStart, cursorEnd, def, cloneInput } = options;
+	// все спаны в клоне
+	let allSpan = cloneInput.querySelectorAll('span');
+	// заменяем на значения из нового инпута или маски по мере заполнения
+	let i = 0;
+	allSpan.forEach(item => {
+		if (i < val.length) {
+			item.innerHTML = val.charAt(i++);
+			item.classList.add("mask-shadow__span_hiden")
+		} else {
+			item.innerHTML = mask.charAt(i++);
+			item.classList.remove("mask-shadow__span_hiden")
+		}
+	})
+}
+
+//*** делает клон инпута, стили для него + "подрезаем" клон за счет присвоения класса 
+//**  спанам в def (в CSS для них опасити 0)
+function makeShadow(options) {
+	let { input, mask, def } = options;
+	let parent = input.parentElement; // label родитель инпуту
+	parent.style.position = "relative";
+
+	let styleInput = input.className; // стили из клонируемого
+	let cloneInput = document.createElement('div');// clone
+	cloneInput.classList = styleInput; // присваеваем стили клону
+	// добавляем стили и классы клону
+	cloneInput.classList.add("mask-shadow");
+	cloneInput.style.display = "inline-block";
+	cloneInput.style.position = "absolute";
+	cloneInput.style.top = "0";
+	cloneInput.style.left = "0";
+	cloneInput.style.width = "100%";
+	cloneInput.style.height = "100%";
+	cloneInput.style.zIndex = "-50";
+	cloneInput.style.pointerEvents = "none";
+	// оборачиваем каждый знак маски в span + span для def присваем класс для прозрачности
+	cloneInput.innerHTML = mask.replace(/[^]/g, (a, ind) => {
+		if (ind < def) {
+			return `<span class ="mask-shadow__span mask-shadow__span_hiden">${a}</span>`
+		} else {
+			return `<span class ="mask-shadow__span">${a}</span>`
+		}
+	})
+	input.after(cloneInput); // вставляем на страницу клон
+	return cloneInput;
+}
 
 
 //**** находим добавочный add для смещения влево */
