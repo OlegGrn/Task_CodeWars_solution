@@ -12,7 +12,7 @@ const setInputCheek = {
 	phoneRuMobile: { // на российские мобильные + городские с кодом из 3 цифр  
 		set: /^((8|\+7)[\- ]?)?(\(?\d{3}\)?[\- ]?)?[\d\- ]{7,10}$/,
 		help: "Российские мобильные",
-		mask: '+7 (___) ___ - __ - __'
+		mask: "+7(___) ___ - __ - __"
 	},
 	class_remove: new Set() // коллекция классов для последующей очистки формы
 }
@@ -24,10 +24,11 @@ document.addEventListener("DOMContentLoaded", () => {
 	document.querySelectorAll('[data-mask-phone]').forEach(input => {
 
 		// устанавливаем значение placeholder (из знчения placeholder, если нет - из атрибута 'data-mask-phone, если нет - из setInputCheek)
-		input.placeholder = (input.getAttribute('placeholder')) ? input.getAttribute('placeholder') :
+		let placeholderVal = (input.getAttribute('placeholder')) ? input.getAttribute('placeholder') :
 			(input.getAttribute('data-mask-phone')) ? input.getAttribute('data-mask-phone') :
 				(input.name && setInputCheek) ? setInputCheek[input.name].mask : "";
 
+		input.placeholder = removeSpice(placeholderVal); // убираем лишние пробелы при их наличии
 
 		// получаем маску		
 		let mask = getMaskPhone(input);
@@ -53,7 +54,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 		input.addEventListener('input', () => maskPhoneInput({ input, mask, cursorStart, cursorEnd, def, numMask, cloneInput }));
 		input.addEventListener('focus', () => maskPhoneFocus({ input, mask, cursorStart, cursorEnd, def, numMask, cloneInput }));
-		//input.addEventListener('blur', () => maskPhoneBlur({ input, mask, cursorStart, cursorEnd, def, numMask, cloneInput }));
+		input.addEventListener('blur', () => maskPhoneBlur({ input, mask, cursorStart, cursorEnd, def, numMask, cloneInput }));
 	})
 
 });
@@ -64,35 +65,45 @@ function getMaskPhone(input) {
 
 	let defolt = "+7(___) ___ ____";
 
-	return (input.getAttribute('data-mask-phone')) ? input.getAttribute('data-mask-phone') :
+	let mask = (input.getAttribute('data-mask-phone')) ? input.getAttribute('data-mask-phone') :
 		(input.name && setInputCheek) ? setInputCheek[input.name].mask : defolt;
+
+	return removeSpice(mask)
+}
+//* удаляет лишние пробелы в маске *********
+function removeSpice(mask) {
+	return mask
+		.trim()
+		.replace(/[^]/g, (a, ind, str) => ((a == " ") && (str.charAt(++ind) == " ")) ? "" : a)
 }
 
 
 //* ======= фокус на инпуте =====================
 function maskPhoneFocus(options) {
 
-	let { input, mask, cloneInput } = options;
+	let { input, mask, def, cloneInput } = options;
 
 	if (cloneInput) {
 		input.style.backgroundColor = "transparent";
 	}
 
-	const begining = mask.slice(0, mask.indexOf("_"));
-	input.value = (input.value < begining.length) ? begining : input.value;
+	input.value = (input.value < def) ? mask.slice(0, def) : input.value;
 
 	setTimeout(() => {
 		input.selectionStart = input.selectionEnd = input.value.length;
 	}, 0)
 }
+
 //* ======= потеря фокуса =======================
 function maskPhoneBlur(options) {
 
-	let { input, mask } = options;
+	let { input, mask, def } = options;
 
 	const clearPhoneBlur = input.classList.contains('required');
+
 	input.value = (input.value.length == mask.length) ? input.value :
-		(clearPhoneBlur) ? "" : input.value;
+		(input.value.length == def) ? "" :
+			(clearPhoneBlur) ? "" : input.value;
 }
 
 
@@ -134,10 +145,14 @@ function wrapController(func) {
 
 		if (cursorStart == cursorEnd) { //ввод одним знком или вставкой НО без прежнего выделения
 			if (unfull) { // в инпуте цифр меньше допустимого маской
+
 				owldValue = func(options, newNumber);
-				if (!wasEnterNum && !wasDel) { // не было цифр и не было удаления
-					input.selectionStart = input.selectionEnd = cursorStart;
-				}
+
+				// if (!wasEnterNum && !wasDel) { // не было цифр и не было удаления
+				// 	input.selectionStart = input.selectionEnd = cursorStart;
+				// }
+
+
 			} else if (!unfull) { // в инпуте введённых цифр больше допустимого маской 
 				// вводилось вставкой сразу несколько цифр
 				if ((cursorInpt - cursorStart > 1)) {
@@ -153,8 +168,6 @@ function wrapController(func) {
 					// вводилось одним знаком, но инпут уже был заполнен (иначе сработала бы ветка с условием unfull==true )
 					input.value = owldValue;
 					input.selectionStart = input.selectionEnd = cursorStart;
-
-
 				}
 			}
 		} else if (cursorStart != cursorEnd) { // предварительно было веделение 
@@ -176,10 +189,14 @@ function maskPhoneInput(options, newNumber) {
 	console.log(`-${input.value}- тукщий инпут. \  `);
 
 	// получаем введные цифры из инпута массивом в правильном порядке + положение курсора
+
 	let getValue = getValueInput(options, newNumber);
-	let newInputValue = madeNewValue(options, getValue); // вычисляем новое значение инпута 	
-	input.value = newInputValue; // устанавливаем новое значение инпута 
+	let newInputValue = madeNewValue(options, getValue); // вычисляем новое значение инпута 
 	let cursorPos = setCursor(options, newNumber);
+
+	input.value = newInputValue; // устанавливаем новое значение инпута 
+
+
 	if (cursorPos != undefined) {
 		input.selectionStart = input.selectionEnd = cursorPos;
 	}
@@ -203,6 +220,9 @@ function getValueInput(options, newNumber) {
 		(cursorInpt + ((cursorInpt < cursorEnd && add != 0) ? 0 : add)));
 	let nextVal = nextValOne + newNumber + nextValTwo;
 
+	console.log(`nextValOne-${nextValOne}, nextValTwo-${nextValTwo}, nextVal-${nextVal}, add-${add}`);
+
+
 	// отрезаем из полученной строки nextVal значение def и получем из неё цирфы массимов в правильном порядке
 	let start = (cursorStart < cursorInpt) ? cursorStart : cursorInpt;
 	let result = nextVal.slice(
@@ -216,28 +236,32 @@ function getValueInput(options, newNumber) {
 
 function setCursor(options, newNumber) {
 	let { input, mask, cursorStart, cursorEnd, def } = options;
-	let cursorInpt = input.selectionStart; // положение курсора при событии	
+	let cursorInpt = input.selectionStart;
 	let result;
 
-	if (cursorEnd == cursorStart) {
-		if (cursorInpt == cursorEnd) {
+	if (newNumber.length > 0) {
+		// был ввод новых цифр (без разницы с предварительным удалением через выделение или нет)
+		let count = 0; // отсчитывает найденные "_" в маске с позции cursorStart или cursorInpt
+		let num; // результат это когда count будет == newNumber.length		
+		mask.replace(/[^]/g, (a, ind) => {
+			if ((ind >= ((cursorStart < cursorInpt) ? cursorStart : cursorInpt)) &&
+				(a == "_") && (count++ < newNumber.length)) {
+				num = ++ind;
+			}
+		})
+		result = num;
+
+	} else if (newNumber.length == 0) { // было удаление и ввода новых не было
+		//удаление одного знака клавишей BackSpace
+		if (cursorStart == cursorEnd && cursorInpt < cursorEnd) {
+			result = (cursorInpt < def) ? def : mask.lastIndexOf("_", cursorInpt);
+		} else { // все остальные удаления с выделением или нет
+			//result = mask.indexOf("_", cursorInpt)
 			result = mask.indexOf("_", cursorEnd)
-		} else if (cursorInpt < cursorEnd) {
-			result = (cursorInpt < def) ? def : mask.lastIndexOf("_", cursorInpt)
-		} else {
-			let hold = mask
-				.substring(cursorStart, cursorInpt)
-				.includes("_");
-			result = (hold) ? mask.indexOf("_", cursorInpt) : (mask.indexOf("_", cursorInpt) + 1);
 		}
-	} else if (newNumber && cursorEnd != cursorStart) {
-		let hold = mask
-			.substring(cursorStart, cursorEnd)
-			.includes("_");
-		result = (hold) ? mask.indexOf("_", cursorInpt) : (mask.indexOf("_", cursorInpt) + 1)
-	} else {
-		result = mask.indexOf("_", cursorInpt);
 	}
+	console.log(`cursor ${result} / newNumber.length - ${newNumber.length}`);
+
 	return result;
 }
 
@@ -269,11 +293,7 @@ function madeNewValue(options, getValue) {
 	if (cloneInput) {
 		madeShadowInput(options, emptyPos, val)
 	}
-
-
 	return val
-
-	//return mask_value
 }
 
 //** подрезает тень в зависимости от заполнения инпута */
@@ -304,7 +324,7 @@ function makeShadow(options) {
 
 	let styleInput = input.className; // стили из клонируемого
 	let cloneInput = document.createElement('div');// clone
-	cloneInput.classList = styleInput; // присваеваем стили клону
+	cloneInput.classList = styleInput; // присваеваем стили клону из клонируемого
 	// добавляем стили и классы клону
 	cloneInput.classList.add("mask-shadow");
 	cloneInput.style.display = "inline-block";
@@ -426,7 +446,7 @@ function getNextVal(options) {
 	let cursorInpt = input.selectionStart;
 
 	// cursorStart - начало ввода (если ранее было выделение - начало выделения), cursorInpt - окончание ввода
-	// строка между ними  - это то что ввёл юзер newNumber  
+	// строка между ними  - это то что ввёл юзер newNumber
 	let newNumber = input.value.slice(cursorStart, cursorInpt).replace(/\D/g, "");
 
 	//добавочная цифра для корректировки nextValOne и nextValTwo чтобы можно было удалить цирфу за/перед пробелами
@@ -448,3 +468,13 @@ function getNextVal(options) {
 	return { nextVal, newNumber }
 }
 */
+
+// if (cursorEnd - cursorStart == 1) {
+		// 	let hold = mask
+		// 		.substring(cursorStart, cursorEnd)
+		// 		.includes("_");
+		// 	result = (hold) ? mask.indexOf("_", cursorInpt) : (mask.indexOf("_", cursorInpt) + 1)
+
+		// } else if (cursorEnd - cursorStart > 1) {
+		// 	result = ((cursorStart < def) ? def : cursorStart) + newNumber.length;
+		// }
