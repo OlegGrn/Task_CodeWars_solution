@@ -1,5 +1,3 @@
-"use strict";
-
 const setInputCheek = {
 	name: { // регулярка провекри имени
 		set: /^[a-zа-я -]{2,16}$/i,
