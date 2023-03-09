@@ -1,7 +1,7 @@
 
 Maket/
 node_modules/
-package-lock.json
+*.json
 
 
 
