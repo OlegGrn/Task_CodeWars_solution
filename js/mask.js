@@ -1,11 +1,11 @@
 "use strict";
 
 const setInputCheek = {
-	name: { // регулярка провекри имени
+	name: { // регулярка проверки имени
 		set: /^[a-zа-я -]{2,16}$/i,
-		help: "Кирилица и латинские буквы, пробелы и знак \" - \"(тире)"
+		help: "Кириллица и латинские буквы, пробелы и знак \" - \"(тире)"
 	},
-	email: { // регулярка провекри почты  
+	email: { // регулярка проверки почты
 		set: /^[A-Z0-9._%+-]+@[A-Z0-9-]+.+.[A-Z]{2,4}$/i,
 		help: "something text"
 	},
@@ -22,7 +22,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 	document.querySelectorAll('[data-mask-phone]').forEach(input => {
 
-		// устанавливаем значение placeholder (из знчения placeholder, если нет - из атрибута 'data-mask-phone, если нет - из setInputCheek)
+		// устанавливаем значение placeholder (из значения placeholder, если нет - из атрибута 'data-mask-phone, если нет - из setInputCheek)
 		let placeholderVal = (input.getAttribute('placeholder')) ? input.getAttribute('placeholder') :
 			(input.getAttribute('data-mask-phone')) ? input.getAttribute('data-mask-phone') :
 				(input.name && setInputCheek) ? setInputCheek[input.name].mask : "";
@@ -71,7 +71,7 @@ function getMaskPhone(input) {
 function removeSpice(mask) {
 	return mask
 		.trim()
-		.replace(/[^]/g, (a, ind, str) => ((a == " ") && (str.charAt(++ind) == " ")) ? "" : a)
+		.replace(/[^]/g, (a, ind, str) => ((a === " ") && (str.charAt(++ind) == " ")) ? "" : a)
 }
 
 //* ======= фокус на инпуте =====================
@@ -96,10 +96,10 @@ function maskPhoneBlur(options) {
 
 	const clearPhoneBlur = input.classList.contains('required');
 
-	input.value = (input.value.length == mask.length) ? input.value :
-		(input.value.length == def) ? "" :
+	input.value = (input.value.length === mask.length) ? input.value :
+		(input.value.length === def) ? "" :
 			(clearPhoneBlur) ? "" : input.value;
-	if (input.value == '' && cloneInput) {
+	if (input.value === '' && cloneInput) {
 		input.style.backgroundColor = ""
 	}
 }
@@ -113,7 +113,7 @@ function wrapController(func) {
 		let { input, cursorStart, cursorEnd, mask } = options;
 
 		let cursorInpt = input.selectionStart; // положение курсора при событии	
-		if ((input.value.length > mask.length) && (cursorInpt - cursorEnd == 1)) {
+		if ((input.value.length > mask.length) && (cursorInpt - cursorEnd === 1)) {
 			input.value = owldValue;
 			input.selectionStart = input.selectionEnd = cursorStart;
 		} else {
