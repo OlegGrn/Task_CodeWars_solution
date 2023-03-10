@@ -1,35 +1,21 @@
-function findMatchedByPattern(pattern: string) {
-
-    return function (word: string): boolean {
-
-        let count: number = 0;
-
-        let test = word.replace(/\w/g,
-            char => {
-                if (pattern.slice(count).includes(char)) {
-                    count++;
-                    return char
-                } else {
-                    return ""
-                }
-            })
-
-        return test === pattern
-    }
+function toCamelCase(str: string): string {
+    let count: number;
+    return str.replace(/./g,
+        (char: string, ind: number) => {
+            if (char === "-" || char === "_") {
+                count = ind + 1;
+                return ""
+            } else if (ind === count) {
+                return char.toUpperCase()
+            } else {
+                return char
+            }
+        })
 }
 
 
-let predicate = findMatchedByPattern("bmb")
-
 console.log(
-    predicate("bomb")
+    toCamelCase("the_stealth-warrior")
 )
 
-/*
-kkk     kiln      false
-
-bmb       bomb      true
-          babyboom  false
-
-*/
 

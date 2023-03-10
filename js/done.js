@@ -4,7 +4,7 @@
 
 //? переработанный МОЙ с учетом инфы ниже
 
-//? Вариант 2  НЕ мой
+//? Вариант 2 НЕ мой
 
 //-------------------------------------------------------------------------------------
 //*
@@ -12,7 +12,7 @@
 
 //? переработанный МОЙ с учетом инфы ниже
 
-//? Вариант 2  НЕ мой
+//? Вариант 2 НЕ мой
 
 //-------------------------------------------------------------------------------------
 //*
@@ -20,16 +20,32 @@
 
 //? переработанный МОЙ с учетом инфы ниже
 
-//? Вариант 2  НЕ мой
+//? Вариант 2 НЕ мой
 
 
 //-------------------------------------------------------------------------------------
-//*
+// Завершите метод/функцию, чтобы он преобразовывал слова,
+// разделенные тире/подчеркиванием, в верблюжий регистр.
 //? Вариант 1 МОЙ
+function toCamelCase(str) {
+    let count;
+    return str.replace(/./g, (char, ind) => {
+        if (char === "-" || char === "_") {
+            count = ind + 1;
+            return "";
+        }
+        else if (ind === count) {
+            return char.toUpperCase();
+        }
+        else {
+            return char;
+        }
+    });
+}
+//? Вариант 2 НЕ мой
+function toCamel_Case (str){
+    return str.replace(/[-_](.)/g, (_, c) => c.toUpperCase());
 
-//? переработанный МОЙ с учетом инфы ниже
-
-//? Вариант 2  НЕ мой
 
 //-------------------------------------------------------------------------------------
 //* Реализуйте функцию findMatchedByPattern (pattern), которая возвращает
@@ -202,7 +218,7 @@ function sumPairs(ints, s) {
 
             for (let i = ++ind; i < ints.length; i++) {
                 let sum = item + ints[i];
-                if (sum == s) {
+                if (sum === s) {
                     result[i] = [item, ints[i]];
                     arrKeys.push(ints[i])
                     continue outer;
@@ -419,7 +435,7 @@ function humanReadable(seconds) {
 
 
 //? Вариант 2  НЕ мой
-const humanReadable = sec => {
+const humanReadablE = sec => {
     let hours = Math.floor(sec / 3600);
     let minutes = Math.floor(sec % 3600 / 60);
     let seconds = Math.floor(sec % 3600 % 60);
@@ -1594,8 +1610,8 @@ function disemvowel(str) {
     return str;
 }
 
-let str = "This website is for losers LOL!"
-console.log(disemvowel(str));
+//let str = "This website is for losers LOL!"
+//console.log(disemvowel(str));
 //!------------------UP CODEWARS---------------------------------------------- 
 //* Напишите код, который выводит все простые числа из интервала от 2 до n.
 let start = 2;
@@ -1994,7 +2010,7 @@ function throttle(func, ms) {
     }
 
     return wrapper;
-}
+}}
 
 let f2000 = throttle(log, 2000);
 
