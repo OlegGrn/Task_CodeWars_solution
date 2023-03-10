@@ -1,23 +1,35 @@
-let getMilitaryTime = function (str: string): string {
+function findMatchedByPattern(pattern: string) {
 
-    return str
-        .slice(0, -2)
-        .split(":")
-        .map((item, ind) => {
-            if (ind === 0) {
-                if (str.includes("AM")) {
-                    return item === "12" ? "00" : item;
+    return function (word: string): boolean {
+
+        let count: number = 0;
+
+        let test = word.replace(/\w/g,
+            char => {
+                if (pattern.slice(count).includes(char)) {
+                    count++;
+                    return char
                 } else {
-                    return item === "12" ? item : String(+item + 12);
+                    return ""
                 }
-            } else return item
-        })
-        .join(":")
+            })
+
+        return test === pattern
+    }
+}
 
 
-};
-
+let predicate = findMatchedByPattern("bmb")
 
 console.log(
-    getMilitaryTime("02:00:25PM")
+    predicate("bomb")
 )
+
+/*
+kkk     kiln      false
+
+bmb       bomb      true
+          babyboom  false
+
+*/
+
