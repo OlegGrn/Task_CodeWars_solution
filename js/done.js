@@ -82,6 +82,14 @@ function decipherThis_2(str) {
         )
         .join(" ")
 }
+//? Вариант 2 Мой
+function changeStr(str) {
+    let res = str.split(" ")
+        .map(word => word.replace(/\b(?<one>\w)(?<two>\w)(?<anoter>\w*)(?<last>\w)\b/gi
+            , "$<one>$<last>$<anoter>$<two>")
+        )
+        .join(" ")
+}
 
 //-------------------------------------------------------------------------------------
 // Завершите метод/функцию, чтобы он преобразовывал слова,
