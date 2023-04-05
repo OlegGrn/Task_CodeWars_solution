@@ -1,21 +1,20 @@
 "use strict";
 
-/*
 
-let str9 = " -2.0 + -3.4";
-function parse(str) {
-   let result =  str.match(/(?:\s?)(-?\d+\.?\d*)(?:\s?)([*!/+-])(?:\s?)(-?\d+\.?\d*)/);
-   let [,...res] = result
-    return res
+let strr = `[b]привет![/b]
+[quote]
+  [url]http://ya.ru[/url]
+[/quote]`;
+
+function findBBcode(strr) {
+	let reg = /(\[(?<name>url|b|quote)\]).*?(\[\/\k<name>\])/gis;
+	return strr.match(reg)
 }
 
+console.log(findBBcode(strr));
 
-let [a, op, b] = parse(str9);
 
-console.log(a)
-console.log(op)
-console.log(b)
-*/
+
 
 
 
