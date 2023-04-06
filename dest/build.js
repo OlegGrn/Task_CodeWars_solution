@@ -25,4 +25,32 @@ let str8 = "Java JavaScript PHP C++ C";
 function findLang(str) {
     return str.match(/(Java(Script)?|PHP|C\+\+|C)/g);
 }
-console.log(findLang(str8));
+let str9 = `
+[quote]
+  [b]текст[/b]
+[/quote]`;
+function findCodeBB(str) {
+    return str.match(/\[(quote|b|url)].*?\[\/\1]/gis);
+}
+let str10 = ' .. "test me" .. "Скажи \\"Привет\\"!" .. "\\\\ \\"" .. ';
+function findQuotes(str) {
+    return str.match(/"(\\.|[^"\\])*"/gs);
+}
+let str11 = "<style> <styler> <style test=\"...\">";
+function findTeg(str) {
+    return str.match(/<style(\s.+?>|>)/g);
+}
+let str12 = "0 12 -5 -123 -18";
+function findNegNum(str) {
+    return str.match(/(?<!-)(?<!\d)\d+/g);
+}
+let str14 = `
+<html>
+  <body style="height: 200px">
+  ...
+  </body>
+</html>`;
+function changeBody(srt) {
+    return srt.replace(/(?<=<body.*>)/si, `<h1>Hello</h1>`);
+}
+console.log(changeBody(str14));

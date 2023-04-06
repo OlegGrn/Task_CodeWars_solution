@@ -1,7 +1,7 @@
 "use strict";
 
 
-let strr = `[b]привет![/b]
+/*let strr = `[b]привет![/b]
 [quote]
   [url]http://ya.ru[/url]
 [/quote]`;
@@ -11,7 +11,7 @@ function findBBcode(strr) {
 	return strr.match(reg)
 }
 
-console.log(findBBcode(strr));
+console.log(findBBcode(strr));*/
 
 
 

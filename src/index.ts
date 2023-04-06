@@ -32,11 +32,49 @@ function parse(str: string) {
 }
 
 let str8: string = "Java JavaScript PHP C++ C";
+
 function findLang(str: string) {
     return str.match(/(Java(Script)?|PHP|C\+\+|C)/g)
 }
 
-console.log(findLang(str8))
+let str9: string = `
+[quote]
+  [b]текст[/b]
+[/quote]`
+function findCodeBB(str: string) {
+    return str.match(/\[(quote|b|url)].*?\[\/\1]/gis)
+
+}
+
+let str10: string = ' .. "test me" .. "Скажи \\"Привет\\"!" .. "\\\\ \\"" .. ';
+function findQuotes(str:string) {
+    return str.match(/"(\\.|[^"\\])*"/gs)
+}
+
+let str11: string = "<style> <styler> <style test=\"...\">"
+function findTeg(str: string) {
+    return str.match(/<style(\s.+?>|>)/g)
+}
+
+let str12: string = "0 12 -5 -123 -18"
+function findNegNum(str: string) {
+    return str.match(/(?<!-)(?<!\d)\d+/g)
+}
+
+let str14: string = `
+<html>
+  <body style="height: 200px">
+  ...
+  </body>
+</html>`
+function changeBody(srt: string) {
+   return srt.replace(/(?<=<body.*>)/si, `<h1>Hello</h1>`)
+}
+
+
+
+
+console.log(changeBody(str14))
 
 
 
