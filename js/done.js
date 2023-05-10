@@ -7,62 +7,81 @@
 //? Вариант 2 НЕ мой
 
 //-------------------------------------------------------------------------------------
-//*
+//*Напишите функцию, которая проверяет входную строку. Если строка представляет собой
+// идеальный квадрат, верните true, в противном случае — false.
+// символ '.' (точка) — правильный квадрат (1x1) *
 //? Вариант 1 МОЙ
-
-//? переработанный МОЙ с учетом инфы ниже
+function perfectSquare(string) {
+    if (/[^.\n]/g.test(string)) return false;
+    let res = string.split(/\n/);
+    return res.every(r => r.length === res.length);
+}
+//-------------------------------------------------------------------------------------
+//* Согласно Википедии, ROT13 часто используется для запутывания шуток в USENET.//
+// Для этой задачи вы должны только заменить символы. Не пробелы, знаки препинания, цифры и т.д
+// "This is my first ROT13 excercise!" -> "Guvf vf zl svefg EBG13 rkprepvfr!".
+//? Вариант 1 МОЙ
+function rot13(str) {
+    return str.replace(/[a-z]/gi, a => {
+        let num = a.charCodeAt(0);
+        return String.fromCharCode(((num > 77 && num < 97) || num > 109) ? num - 13 : num + 13);
+    });
+}
 
 //? Вариант 2 НЕ мой
+const rot133 = str =>
+    str.replace(/[a-z]/gi, val => String.fromCharCode(val.charCodeAt() + (/[a-m]/i.test(val) ? 13 : -13)));
 
 //-------------------------------------------------------------------------------------
-//*
+//*функцию dataTypes, которая должна возвращать массив из следующих
+// трех типов данных JavaScript: строки, числа, логические значения
+// "truestring1" => ['boolean', 'string', 'number'].
 //? Вариант 1 МОЙ
-
-//? переработанный МОЙ с учетом инфы ниже
-
-//? Вариант 2 НЕ мой
-
-//-------------------------------------------------------------------------------------
-//*
-//? Вариант 1 МОЙ
-
-//? переработанный МОЙ с учетом инфы ниже
-
-//? Вариант 2 НЕ мой
+function dataTypes(string) {
+    // @ts-ignore
+    return string
+        .replace(/true|false/gi, "!")
+        .match(/([a-z]+)|(\d+)|!/gi)
+        .map(i => {
+            if (/[a-z]+/i.test(i)) {
+                return "string";
+            } else if (/\d+/.test(i)) {
+                return "number";
+            } else return "boolean";
+        });
 
 //-------------------------------------------------------------------------------------
 //*Закодированные слова состоят из строчных букв и как минимум одной звездочки
 // speech = "***lo w***d!" and vocabulary = ["hello", "world"] => "hello world!"  ;
 //? Вариант 1 МОЙ
-function translate(speech, vocabulary) {
-    return speech.replace(/[*\w]+/g, s => {
-        let reg = new RegExp(`\\b${s.replace(/\*/g, "\\w")}\\b`);
-        return vocabulary.find(w => reg.test(w));
-    });
-}
+    function translate(speech, vocabulary) {
+        return speech.replace(/[*\w]+/g, s => {
+            let reg = new RegExp(`\\b${s.replace(/\*/g, "\\w")}\\b`);
+            return vocabulary.find(w => reg.test(w));
+        });
+    }
 
 //-------------------------------------------------------------------------------------
 //*Напишите функцию loopArr, которая зацикливает массив в указанном направлении
 // на некоторое количество шагов.
 //? Вариант 1 МОЙ
-function loopArr(arr, direction, steps) {
-    if (direction === "left") {
-        let arr2 = arr.splice(0, steps);
-        return [...arr, ...arr2];
+    function loopArr(arr, direction, steps) {
+        if (direction === "left") {
+            let arr2 = arr.splice(0, steps);
+            return [...arr, ...arr2];
+        } else if (direction === "right") {
+            let arr2 = arr.splice(-steps);
+            return [...arr2, ...arr];
+        }
     }
-    else if (direction === "right") {
-        let arr2 = arr.splice(-steps);
-        return [...arr2, ...arr];
-    }
-}
+
 //-------------------------------------------------------------------------------------
 //*написать регулярное выражение (регулярное выражение), которое будет соответствовать
 // строке только в том случае, если она содержит хотя бы одну допустимую дату в формате
 // (то есть [mm-dd]месяц из двух цифр, за которым следует тире, за которым следует двузначное
 // число дату в квадратных скобках).
 //? Вариант 1 МОЙ
-let reg = /(\[02-(0[1-9]|1\d|2[0-8])])|(\[(0[13578]|1[02])-(0[1-9]|[12]\d|3[01])])|(\[(0[469]|11)-(0[1-9]|[12]\d|30)])/
-
+    let reg12 = /(\[02-(0[1-9]|1\d|2[0-8])])|(\[(0[13578]|1[02])-(0[1-9]|[12]\d|3[01])])|(\[(0[469]|11)-(0[1-9]|[12]\d|30)])/
 
 
 //-------------------------------------------------------------------------------------
@@ -70,10 +89,10 @@ let reg = /(\[02-(0[1-9]|1\d|2[0-8])])|(\[(0[13578]|1[02])-(0[1-9]|[12]\d|3[01])
 // IP-адреса следует считать действительными, если они состоят из четырех октетов со значениями
 // от 0до 255включительно. Ведущие нули (например 01.02.03.04) считаются недействительными
 //? Вариант 1 МОЙ
-function isValidIP(str) {
-    let reg = /^((\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])(\.|$)){4}$/;
-    return reg.test(str);
-}
+    function isValidIP(str) {
+        let reg = /^((\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])(\.|$)){4}$/;
+        return reg.test(str);
+    }
 
 //-------------------------------------------------------------------------------------
 //*Учитывая массив (arr) в качестве аргумента, завершите функцию countSmileys, которая
@@ -82,40 +101,41 @@ function isValidIP(str) {
 // У смайлика может быть нос, но не обязательно. Допустимые символы для носа - или ~
 // Каждое улыбающееся лицо должно иметь улыбающийся рот, который должен быть отмечен либо значком, ) либо D
 //? Вариант 1 МОЙ
-function countSmileys(arr) {
-	return arr.filter(i => /^(:|;)(-|~)?(\)|D)$/.test(i)).length;
-}
+    function countSmileys(arr) {
+        return arr.filter(i => /^(:|;)(-|~)?(\)|D)$/.test(i)).length;
+    }
+
 //-------------------------------------------------------------------------------------
 //*необходимо зашифровать каждое слово в сообщении, используя следующие правила:
 // Первая буква должна быть преобразована в код ASCII. // Вторая буква должна быть заменена последней буквой
 //? Вариант 1 МОЙ
-const encryptThis = function (text) {
-    return text.replace(/\b(\w?)(\w?)(\w*)(\w)\b/g,
-        (_, p1, p2, p3, p4) => !p1 ? p4.charCodeAt() : p1.charCodeAt() + p4 + p3 + p2);
-}
+    const encryptThis = function (text) {
+        return text.replace(/\b(\w?)(\w?)(\w*)(\w)\b/g,
+            (_, p1, p2, p3, p4) => !p1 ? p4.charCodeAt() : p1.charCodeAt() + p4 + p3 + p2);
+    }
 //-------------------------------------------------------------------------------------
 //*  нужно инициализировать имена. 'Barack Hussain obama' => B.H.Obama
 //? Вариант 1 МОЙ
-function initials(n) {
-    let reg = /(\w)(\w+)(\s+|($))/g;
-    return n.replace(reg, (_, p1, p2, p3) => p3 ? p1.toUpperCase() + "." : p1.toUpperCase() + p2);
-}
+    function initials(n) {
+        let reg = /(\w)(\w+)(\s+|($))/g;
+        return n.replace(reg, (_, p1, p2, p3) => p3 ? p1.toUpperCase() + "." : p1.toUpperCase() + p2);
+    }
 
 //-------------------------------------------------------------------------------------
 //*Вам нужно написать регулярное выражение, которое будет проверять пароль, чтобы убедиться,
 // что он соответствует следующим критериям: Не менее шести символов, содержит строчную букву,
 // содержит заглавную букву, содержит цифру, содержит только буквенно-цифровые символы (обратите внимание, что '_'это не буквенно-цифровые символы)
 //? Вариант 1 МОЙ
-const reg = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d]{6,}$/;
+    const reg = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d]{6,}$/;
 
 
 //-------------------------------------------------------------------------------------
 //*Реализуйте функцию, чтобы она производила предложение из заданных частей.
 //['hello', ",", ",", 'my' , ",", ",", 'dear',".", ".",] ===  hello, my, dear.
 //? Вариант 1 МОЙ
-function makeSentence(parts) {
-    return parts.join(" ").replace(/(?:\s(,))+|(\s\.)+/gi, (_, p1, p2) => p1 ? p1 : "") + ".";
-}
+    function makeSentence(parts) {
+        return parts.join(" ").replace(/(?:\s(,))+|(\s\.)+/gi, (_, p1, p2) => p1 ? p1 : "") + ".";
+    }
 
 //-------------------------------------------------------------------------------------
 //*Если строка содержит буквенно-цифровые символы ("3a4B2d"), возвращает расширение этой
@@ -123,169 +143,170 @@ function makeSentence(parts) {
 // В итоговой строке не должно быть цифр.: ('3abc'),'aaabbbccc') ('3D2a5d2f'),'DDDaadddddff')
 //? Вариант 1 МОЙ
 
-function stringExpansion(s) {
-    let repeat = 1;
-    return s.replace(/.+?/g, l => {
-        let num = +l;
-        let chart = "";
-        if (!isNaN(num)) {
-            repeat = num;
-            return "";
-        }
-        for (let i = 1; i <= repeat; i++) {
-            chart += l;
-        }
-        return chart;
-    })
-}
+    function stringExpansion(s) {
+        let repeat = 1;
+        return s.replace(/.+?/g, l => {
+            let num = +l;
+            let chart = "";
+            if (!isNaN(num)) {
+                repeat = num;
+                return "";
+            }
+            for (let i = 1; i <= repeat; i++) {
+                chart += l;
+            }
+            return chart;
+        })
+    }
 
 //? переработанный МОЙ
-function stringExpansion2(s) {
-    return s.replace(/((\d*)(\d))([a-z]*)/gi, (_, _1, _2, p3, p4) => {
-        return p4.replace(/\w/gi, (w) => w.repeat(p3));
-    });
-}
+    function stringExpansion2(s) {
+        return s.replace(/((\d*)(\d))([a-z]*)/gi, (_, _1, _2, p3, p4) => {
+            return p4.replace(/\w/gi, (w) => w.repeat(p3));
+        });
+    }
 
 //-------------------------------------------------------------------------------------
 //*вы должны проверить, является ли строка ввода пользователя буквенно-цифровой
 // Допустимые символы: прописные/строчные латинские буквы и цифры от 0до9
 // Без пробелов/подчеркивания
-function alphanumeric(string) {
-    let reg = new RegExp(/^[A-Za-z0-9]+$/);
-    return reg.test(string);
-}
+    function alphanumeric(string) {
+        let reg = new RegExp(/^[A-Za-z0-9]+$/);
+        return reg.test(string);
+    }
 
 //-------------------------------------------------------------------------------------
 //*Учитывая речь "a**? *c*. **e,"и словарный запас ["ace", "acd", "abd"],
 // ожидаемый ответ "abd? acd. ace,".
 //? Вариант 1 МОЙ
-function translate11(speech, vocabulary) {
-    while (speech.includes("*")) {
-        speech = speech.replace(/[*\w]*\*[*\w]*/gi, w => {
-            let reg = new RegExp(w.replace(/\*/g, "\\w")
-                .replace(/.+/, "\\b$&\\b"));
-            let result = vocabulary.filter(v => reg.test(v));
-            if (result.length === 1) {
-                vocabulary = vocabulary.filter(i => i !== result[0]);
-                return result[0];
-            } else return w;
-        });
+    function translate11(speech, vocabulary) {
+        while (speech.includes("*")) {
+            speech = speech.replace(/[*\w]*\*[*\w]*/gi, w => {
+                let reg = new RegExp(w.replace(/\*/g, "\\w")
+                    .replace(/.+/, "\\b$&\\b"));
+                let result = vocabulary.filter(v => reg.test(v));
+                if (result.length === 1) {
+                    vocabulary = vocabulary.filter(i => i !== result[0]);
+                    return result[0];
+                } else return w;
+            });
+        }
+        return speech;
     }
-    return speech;
-}
 
 //-------------------------------------------------------------------------------------
 //*Напишите функцию, которая принимает массив из 10 целых чисел (от 0 до 9),
 // которая возвращает строку этих чисел в виде номера телефона.
 // ([1, 2, 3, 4, 5, 6, 7, 8, 9, 0]) // => returns "(123) 456-7890"
 //? Вариант 1 МОЙ
-function createPhoneNumber(numbers) {
-    return numbers.join("")
-        .replace(/(\d{3})(\d{3})(\d+)/, "($1) $2-$3");
-}
+    function createPhoneNumber(numbers) {
+        return numbers.join("")
+            .replace(/(\d{3})(\d{3})(\d+)/, "($1) $2-$3");
+    }
 
 //-------------------------------------------------------------------------------------
 //*Переместите первую букву каждого слова в конец, а затем добавьте «ay» в конец слова.
 // Оставьте знаки препинания нетронутыми.
 // Pig t latin is cool = igPay tay atinlay siay oolcay
 //? Вариант 1 МОЙ
-function pigIt(str) {
-    return str.replace(/(\w)(\w*)(\s|$)/gi, "$2$1ay$3");
-}
+    function pigIt(str) {
+        return str.replace(/(\w)(\w*)(\s|$)/gi, "$2$1ay$3");
+    }
 
 //-------------------------------------------------------------------------------------
 //* Преобразовать "camelsHaveThreeHumps"  -->  "camels-have-three-humps"
-function kebabize(str) {
-    return str.replace(/([^A-Za-z])/g, "")
-        .replace(/[A-Z]/g, (l, ind) => (ind !== 0) ? `-${l.toLowerCase()}` : l.toLowerCase());
-}
+    function kebabize(str) {
+        return str.replace(/([^A-Za-z])/g, "")
+            .replace(/[A-Z]/g, (l, ind) => (ind !== 0) ? `-${l.toLowerCase()}` : l.toLowerCase());
+    }
 
 //-------------------------------------------------------------------------------------
 //* Удалить скобки вместе с содержимым
 //? Вариант 1 МОЙ
-let str25 = "(first (more (wo)rds) oup) test (second group)"; // на выходе слово  test
-function removeParentheses(s) {
-    let qty = -1;
-    //console.log(s.match(/\([^(]*?\)/g));
-    return s.replace(/./g, l => {
-        if (l === "(") {
-            qty++;
-        }
-        if (qty >= 0) {
-            if (l === ")") {
-                qty--;
+    let str25 = "(first (more (wo)rds) oup) test (second group)"; // на выходе слово  test
+    function removeParentheses(s) {
+        let qty = -1;
+        //console.log(s.match(/\([^(]*?\)/g));
+        return s.replace(/./g, l => {
+            if (l === "(") {
+                qty++;
             }
-            return "";
-        } else return l;
-    });
-}
+            if (qty >= 0) {
+                if (l === ")") {
+                    qty--;
+                }
+                return "";
+            } else return l;
+        });
+    }
 
 //-------------------------------------------------------------------------------------
 // Для каждого слова://
 // вторая и последняя буквы меняются местами (например, Hello становится Holle)
 // первая буква заменяется кодом символа (например, H становится 72)
 //? Вариант 1 МОЙ
-function decipherThis(str) {
-    return str
-        .split(" ")
-        .map(word => {
-            return word
-                .replace(/\d+/, digit => String.fromCodePoint(+digit))
-                .split("")
-                .map((char, ind, arr) => {
-                    if (ind === 1) {
-                        return arr[arr.length - 1];
-                    } else if (ind === arr.length - 1 && arr.length > 1) {
-                        return arr[1];
-                    } else {
-                        return char;
-                    }
-                })
-                .join("");
-        })
-        .join(" ");
-}
+    function decipherThis(str) {
+        return str
+            .split(" ")
+            .map(word => {
+                return word
+                    .replace(/\d+/, digit => String.fromCodePoint(+digit))
+                    .split("")
+                    .map((char, ind, arr) => {
+                        if (ind === 1) {
+                            return arr[arr.length - 1];
+                        } else if (ind === arr.length - 1 && arr.length > 1) {
+                            return arr[1];
+                        } else {
+                            return char;
+                        }
+                    })
+                    .join("");
+            })
+            .join(" ");
+    }
 
 //? Вариант 2 НЕ мой
-function decipherThis_2(str) {
-    return str.split(" ")
-        .map(w =>
-            w.replace(/^\d+/, c => String.fromCharCode(c))
-                .replace(/^(.)(.)(.*)(.)$/, "$1$4$3$2")
-        )
-        .join(" ")
-}
+    function decipherThis_2(str) {
+        return str.split(" ")
+            .map(w =>
+                w.replace(/^\d+/, c => String.fromCharCode(c))
+                    .replace(/^(.)(.)(.*)(.)$/, "$1$4$3$2")
+            )
+            .join(" ")
+    }
 
 //? Вариант 2 Мой
-function changeStr(str) {
-    let res = str.split(" ")
-        .map(word => word.replace(/\b(?<one>\w)(?<two>\w)(?<anoter>\w*)(?<last>\w)\b/gi
-            , "$<one>$<last>$<anoter>$<two>")
-        )
-        .join(" ")
-}
+    function changeStr(str) {
+        let res = str.split(" ")
+            .map(word => word.replace(/\b(?<one>\w)(?<two>\w)(?<anoter>\w*)(?<last>\w)\b/gi
+                , "$<one>$<last>$<anoter>$<two>")
+            )
+            .join(" ")
+    }
 
 //-------------------------------------------------------------------------------------
 // Завершите метод/функцию, чтобы он преобразовывал слова,
 // разделенные тире/подчеркиванием, в верблюжий регистр.
 //? Вариант 1 МОЙ
-function toCamelCase(str) {
-    let count;
-    return str.replace(/./g, (char, ind) => {
-        if (char === "-" || char === "_") {
-            count = ind + 1;
-            return "";
-        } else if (ind === count) {
-            return char.toUpperCase();
-        } else {
-            return char;
-        }
-    });
-}
+    function toCamelCase(str) {
+        let count;
+        return str.replace(/./g, (char, ind) => {
+            if (char === "-" || char === "_") {
+                count = ind + 1;
+                return "";
+            } else if (ind === count) {
+                return char.toUpperCase();
+            } else {
+                return char;
+            }
+        });
+    }
 
 //? Вариант 2 НЕ мой
-function toCamel_Case(str) {
-    return str.replace(/[-_](.)/g, (_, c) => c.toUpperCase());
+    function toCamel_Case(str) {
+        return str.replace(/[-_](.)/g, (_, c) => c.toUpperCase());
+    }
 
 
     //-------------------------------------------------------------------------------------
@@ -1765,7 +1786,21 @@ function toCamel_Case(str) {
     //* не моё решение
     function solution(number) {
         // convert the number to a roman numeral
-        let roman = {M: 1000, CM: 900, D: 500, CD: 400, C: 100, XC: 90, L: 50, XL: 40, X: 10, IX: 9, V: 5, IV: 4, I: 1}
+        let roman = {
+            M: 1000,
+            CM: 900,
+            D: 500,
+            CD: 400,
+            C: 100,
+            XC: 90,
+            L: 50,
+            XL: 40,
+            X: 10,
+            IX: 9,
+            V: 5,
+            IV: 4,
+            I: 1
+        }
         let ans = '';
 
         for (let key in roman) {
