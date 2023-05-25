@@ -23,12 +23,142 @@
 //? Вариант 2 НЕ мой
 
 //-------------------------------------------------------------------------------------
-//*
+//*возвращает среднее значение квадрата разности абсолютных значений между каждой парой элементов.
+// [1, 2, 3], [4, 5, 6]  -->   9   because (9 + 9 + 9) / 3
 //? Вариант 1 МОЙ
+let solution = function (firstArray, secondArray) {
+    return firstArray.reduce((sum, it, ind) => {
+        return sum + (it - secondArray[ind]) ** 2;
+    }, 0) / firstArray.length;
+};
 
 //? переработанный МОЙ с учетом инфы ниже
 
 //? Вариант 2 НЕ мой
+
+//-------------------------------------------------------------------------------------
+//*  создать таблицу умножения N×N размера, указанного в параметре.
+//? Вариант 1 МОЙ
+const multiplicationTable = function (size) {
+    let table = [];
+    for (let i = 1; i <= size; i++) {
+        table.push(Array(size).fill("").map((_, ind) => ++ind * i));
+    }
+    return table
+};
+
+//? переработанный МОЙ
+const multiplicationTable2 = function (size) {
+    let table = []
+    for (let i = 1; i <= size; i++) {
+        table.push(
+            Array.from({length: size}, (_, ind) => ++ind*i)
+        )
+    }
+    return table
+}
+
+
+//? Вариант 2 НЕ мой
+
+//-------------------------------------------------------------------------------------
+//*Ваша миссия — реализовать функцию buildMatchesTable, которая получает количество команд
+// (всегда положительное и четное число) и возвращает матрицу.
+// Каждая строка матрицы представляет собой один раунд. Каждый столбец матрицы представляет
+// одно совпадение.
+// Матч представлен в виде массива с двумя командами. Каждая команда представлена числом,
+// начиная с 1 и заканчивая количеством команд. (каждый матч в турнире не повторяется)
+//? Вариант 1 МОЙ
+function buildMatchesTable(numberOfTeams) {
+    let matrix = [];
+    let arr = Array(numberOfTeams).fill(0).map((_, i) => ++i);
+    for (let i = 1; i < numberOfTeams; i++) {
+        arr = arr.map((it, ind) => {
+            return (ind === 0) ? it : (ind === arr.length - 1) ? arr[1] : arr[ind + 1];
+        });
+        let round = [];
+        for (let q = 0; q < numberOfTeams / 2; q++) {
+            round.push([arr[q], arr[arr.length - q - 1]].sort());
+        }
+        matrix.push(round);
+    }
+    return matrix;
+}
+//? переработанный МОЙ
+function buildMatchesTable2 (numberOfTeams) {
+    let matrix = []
+    let arr = Array(numberOfTeams).fill(0).map((_, i) => ++i)
+
+    for (let i = 1; i< numberOfTeams; i++) {
+        let round = []
+        for (let q = 0; q<numberOfTeams/2; q++) {
+            round.push([arr[q], arr[arr.length - q - 1]].sort())
+        }
+        matrix.push(round)
+        arr.splice(1, 0, arr.pop())
+    }
+    return matrix
+}
+
+//? Вариант 2 НЕ мой
+
+//-------------------------------------------------------------------------------------
+//* First Variation on Caesar Ciphe
+// Функция «movingShift» сначала кодирует всю строку, а затем возвращает массив строк,
+// содержащий закодированную строку в 5 частях
+// Расшифровка: параметры и возврат функции "demovingShift"
+//? Вариант 1 МОЙ
+function splitNewS(newS) {
+    let part = Math.ceil(newS.length / 5);
+    let reg = new RegExp(`.{1,${part}}`, "g");
+    let res = newS.match(reg) || [];
+    while (res.length < 5) {
+        res.push("");
+    }
+    return res;
+}
+function movingShift(s, shift) {
+    let newS = s.replace(/./gi, val => {
+        if (/[a-z]/i.test(val)) {
+            return val.replace(/([a-z])|([A-Z])/, (it, p1, p2) => {
+                let a = p1 ? "a".charCodeAt(0) : "A".charCodeAt(0);
+                return String.fromCharCode(
+                    ((it.charCodeAt(0) - a) + shift++) % 26 + a
+                );
+            });
+        }
+        return shift++ && val;
+    });
+    return splitNewS(newS);
+}
+
+function demovingShift(arr, shift) {
+    return arr.join("").replace(/./gi, val => {
+        if (/[a-z]/gi.test(val)) {
+            return val.replace(/([a-z])|([A-Z])/, (it, p1, p2) => {
+                let a = p1 ? "a".charCodeAt(0) : "A".charCodeAt(0);
+                return String.fromCharCode(
+                    ((it.charCodeAt(0) - a) + 26 - shift++ % 26) % 26 + a
+                );
+            });
+        }
+        return shift++ && val;
+    });
+}
+
+//-------------------------------------------------------------------------------------
+//*Форматируйте любое целое число в строку с "," (запятыми) в правильных местах.
+// 5678545 the function should return '5,678,545'
+//? Вариант 1 МОЙ
+const numberFormat = function (number) {
+    let str = String(number);
+    let reg = /^(-?)(\d+)(\d{3})/;
+    // let reg2 = /\B(?=(\d{3})+(?!\d))/g; интересное рег. выражение
+    while (reg.test(str)) {
+        str = str.replace(reg, "$1$2,$3");
+    }
+    return str;
+};
 
 //-------------------------------------------------------------------------------------
 //*Напишите функцию: simplify, которая принимает на вход строку, представляющую полилинейный
