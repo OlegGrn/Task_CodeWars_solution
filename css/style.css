@@ -1,7 +1,7 @@
 * {
-	padding: 0px;
-	margin: 0px;
-	border: 0px;
+	padding: 0;
+	margin: 0;
+	border: 0;
 }
 
 *,
@@ -32,12 +32,11 @@ section {
 html,
 body {
 	height: 100%;
-	min-width: 320;
+	min-width: 320px;
 }
 
 body {
 	line-height: 1;
-	font-family: "";
 	-ms-text-size-adjust: 100%;
 	-moz-text-size-adjust: 100%;
 	-webkit-text-size-adjust: 100%;
@@ -46,7 +45,7 @@ body {
 input,
 button,
 textarea {
-	font-family: "";
+	font-family: inherit;
 }
 
 input::-ms-clear {
@@ -191,6 +190,7 @@ h6 {
 }
 
 .menu__link {
+	font-weight: 500;
 	color: inherit;
 	display: block;
 	padding: 10px 20px;
@@ -198,11 +198,14 @@ h6 {
 }
 
 .menu__link{
-	box-shadow: 0px 10px 20px 5px rgba(0, 0, 0, 0.5);
+	box-shadow: 0 10px 20px 5px rgba(0, 0, 0, 0.5);
 }
 
 .menu__link:hover{
-	box-shadow: inset 0px 5px 10px 0px rgba(0, 0, 0, 0.5);
+	box-shadow: inset 0 5px 10px 0 rgba(0, 0, 0, 0.5);
+	transform: scale(0.9);
+	font-weight: 300;
+
 }
 
 .menu__link_active{
