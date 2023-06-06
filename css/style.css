@@ -180,4 +180,35 @@ h6 {
 	display: inline;
 }
 
+.menu {
+	padding: 15px 0 30px;
+}
+
+.menu__list {
+	display: inline-grid;
+	grid-template-columns: repeat(2, 100px);
+	column-gap: 20px;	
+}
+
+.menu__link {
+	color: inherit;
+	display: block;
+	padding: 10px 20px;
+	font-size: 20px;	
+}
+
+.menu__link{
+	box-shadow: 0px 10px 20px 5px rgba(0, 0, 0, 0.5);
+}
+
+.menu__link:hover{
+	box-shadow: inset 0px 5px 10px 0px rgba(0, 0, 0, 0.5);
+}
+
+.menu__link_active{
+	color: red;
+}
+
+
+
 
