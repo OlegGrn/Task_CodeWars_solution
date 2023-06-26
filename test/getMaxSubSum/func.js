@@ -3,7 +3,7 @@
 // Функция getMaxSubSum(arr) должна возвращать эту сумму.
 
 function getMaxSubSum(arr) {
-    let test = [];
+    /*let test = [];
     while (arr.length > 0) {
         arr.reduceRight((sum, it) => {
             sum = sum + it;
@@ -13,8 +13,17 @@ function getMaxSubSum(arr) {
         arr.pop();
     }
     let result = Math.max(...test);
-    return result > 0 ? result : 0;
+    return result > 0 ? result : 0;*/
 
+    let max = 0;
+    let part = 0;
+    arr.forEach(it => {
+        part += +it;
+        max = Math.max(part, max)
+        if (part < 0) part = 0
+
+    })
+    return max
 }
 
 

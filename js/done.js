@@ -13,7 +13,6 @@
 //? переработанный МОЙ с учетом инфы ниже
 
 //? Вариант 2 НЕ мой
-
 //-------------------------------------------------------------------------------------
 //*
 //? Вариант 1 МОЙ
@@ -21,6 +20,118 @@
 //? переработанный МОЙ с учетом инфы ниже
 
 //? Вариант 2 НЕ мой
+
+//-------------------------------------------------------------------------------------
+//* управлять рядом соседних парковочных мест Parking Lot #1
+//? Вариант 1 МОЙ
+class ParkingLot {
+    constructor(size) {
+        this.parkZone = Array.from({length: size}, (v, pos) => ({free: 1, pos: ++pos}))
+    }
+
+    park(vehicle) {
+        let width = ParkingLot.getWidthVehicle(vehicle);
+        let freePos = ParkingLot.lookingFreePos(width, this.parkZone);
+
+        if (freePos) {
+            let start = freePos - width;
+            let stop = freePos - 1;
+            this.parkZone.map((parking, freePos) => {
+                if (start <= freePos && freePos <= stop) {
+                    parking.free = 0;
+                    parking.license = vehicle.license;
+                }
+                return parking
+            })
+        }
+        return freePos ? true : false;
+    }
+
+    retrieve(license) {
+        let result = false;
+        this.parkZone.map(parking => {
+            if (parking.license && parking.license === license) {
+                result = true;
+                parking.free = 1;
+                delete parking.license
+            }
+        })
+        return result;
+    }
+
+    static lookingFreePos(width, parkZone) {
+        let needWidth = 0;
+        let findWidth = 0;
+        let findPos;
+        outer: for (const place of parkZone) {
+            let {free, pos} = place;
+            if (free) {
+                findWidth = findWidth + 1;
+                needWidth = Math.max(needWidth, findWidth)
+                if (needWidth === width) {
+                    findPos = pos;
+                    break;
+                }
+            } else {
+                findWidth = 0;
+            }
+        }
+        return findPos
+    }
+
+    static getWidthVehicle(vehicle) {
+        switch (vehicle.constructor.name) {
+            case "Bike":
+                return 1;
+            case "Car":
+                return 2;
+            case "Van":
+                return 3;
+            default:
+                return 0;
+        }
+    }
+}
+
+//-------------------------------------------------------------------------------------
+//Изменить getDate для Date, чтобы он возвращал значения 26 для объектов, представляющих 25 декабря,
+// но правильно работал для всех остальных дней года.
+//? Вариант 1 МОЙ
+Date.prototype.getDate = function () {
+    let arrData = this.toString().split(" ");
+    if (arrData[1] === "Dec" && arrData[2] === "25") return 26
+    return +arrData[2]
+}
+//-------------------------------------------------------------------------------------
+//*На входе массив чисел, например: arr = [1, -2, 3, 4, -9, 6].//
+// Задача: найти непрерывный подмассив в arr, сумма элементов в котором максимальна.//
+// Функция getMaxSubSum(arr) должна возвращать эту сумму.
+//? Вариант 1 МОЙ
+function getMaxSubSum(arr) {
+    let test = [];
+    while (arr.length > 0) {
+        arr.reduceRight((sum, it) => {
+            sum = sum + it;
+            test.push(sum);
+            return sum;
+        }, 0);
+        arr.pop();
+    }
+    let result = Math.max(...test);
+    return result > 0 ? result : 0;
+}
+
+//? Вариант 2 НЕ мой
+function getMaxSubSum_2(arr) {
+    let max = 0;
+    let part = 0;
+    arr.forEach(it => {
+        part += +it;
+        max = Math.max(part, max)
+        if (part < 0) part = 0
+    })
+    return max
+}
 
 //-------------------------------------------------------------------------------------
 //*возвращает среднее значение квадрата разности абсолютных значений между каждой парой элементов.
@@ -52,7 +163,7 @@ const multiplicationTable2 = function (size) {
     let table = []
     for (let i = 1; i <= size; i++) {
         table.push(
-            Array.from({length: size}, (_, ind) => ++ind*i)
+            Array.from({length: size}, (_, ind) => ++ind * i)
         )
     }
     return table
@@ -84,14 +195,15 @@ function buildMatchesTable(numberOfTeams) {
     }
     return matrix;
 }
+
 //? переработанный МОЙ
-function buildMatchesTable2 (numberOfTeams) {
+function buildMatchesTable2(numberOfTeams) {
     let matrix = []
     let arr = Array(numberOfTeams).fill(0).map((_, i) => ++i)
 
-    for (let i = 1; i< numberOfTeams; i++) {
+    for (let i = 1; i < numberOfTeams; i++) {
         let round = []
-        for (let q = 0; q<numberOfTeams/2; q++) {
+        for (let q = 0; q < numberOfTeams / 2; q++) {
             round.push([arr[q], arr[arr.length - q - 1]].sort())
         }
         matrix.push(round)
@@ -117,6 +229,7 @@ function splitNewS(newS) {
     }
     return res;
 }
+
 function movingShift(s, shift) {
     let newS = s.replace(/./gi, val => {
         if (/[a-z]/i.test(val)) {
@@ -211,6 +324,7 @@ function perfectSquare(string) {
     let res = string.split(/\n/);
     return res.every(r => r.length === res.length);
 }
+
 //-------------------------------------------------------------------------------------
 //* Согласно Википедии, ROT13 часто используется для запутывания шуток в USENET.//
 // Для этой задачи вы должны только заменить символы. Не пробелы, знаки препинания, цифры и т.д
@@ -554,7 +668,7 @@ function dataTypes(string) {
                 } else return item;
             })
             .join(":");
-    };
+    }
 
     //-------------------------------------------------------------------------------------
     //* Создайте асинхронную функцию getUsers(names), которая получает на вход массив логинов пользователей GitHub,
@@ -670,7 +784,7 @@ function dataTypes(string) {
         outer:
             for (let [ind, item] of ints.entries()) {
 
-                if (arrKeys.includes(item)) continue outer;
+                if (arrKeys.includes(item)) continue;
                 arrKeys.push(item);
 
                 for (let i = ++ind; i < ints.length; i++) {
@@ -1250,7 +1364,7 @@ function dataTypes(string) {
         for (let i = 0; i < this.length; i++) {
 
             if (Array.isArray(this[i]) == false && Array.isArray(other[i]) == false) {
-                continue;
+
             } else if (Array.isArray(this[i]) == Array.isArray(other[i])) {
                 return this[i].sameStructureAs(other[i])
             } else return false;
@@ -1745,7 +1859,7 @@ function dataTypes(string) {
             }
         return risult.join('\n')
 
-    };
+    }
 
     //? переработнанный мой с учетом инфы ниже
 
@@ -1766,7 +1880,7 @@ function dataTypes(string) {
             }
         return risult.join('\n')
 
-    };
+    }
 
 
     //? Вариант 2  НЕ мой
@@ -1959,7 +2073,7 @@ function dataTypes(string) {
         function addResult(number, arr, result) {
             let first = 1;
             if (number == 0) {
-                return
+
             } else if (number > 5 && number < 9) {
                 result.push(arr[1]);
                 while ((number - 4) - first++) result.push(arr[0]);
@@ -2286,7 +2400,8 @@ function dataTypes(string) {
 
         function counter() {
             return counter.count++;
-        };
+        }
+
         counter.count = 0;
 
         counter.set = (value) => counter.count = value;
