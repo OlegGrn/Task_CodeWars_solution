@@ -5,11 +5,23 @@
 //? Вариант 2 НЕ мой
 
 //-------------------------------------------------------------------------------------
-//*
+//* гвоздики и веревочка. Динамическое программирование
+function int(a, b) {
+    let bSort = b.sort((a, b) => a - b);
 
-//? Вариант 1 МОЙ
+    if (a <= 3) return bSort[a - 1] - bSort[0];
 
-//? Вариант 2 НЕ мой
+    let prev_1 = bSort[2] - bSort[0];
+    let prev_2 = bSort[1] - bSort[0];
+
+    for (let i = 3; i < bSort.length; i++) {
+        let alfa = bSort[i] - bSort[i - 1];
+        let d_current = Math.min(prev_1, prev_2) + alfa;
+        prev_2 = prev_1;
+        prev_1 = d_current;
+    }
+    return prev_1
+}
 
 //-------------------------------------------------------------------------------------
 //* показать маршрут из точки А в точку Х. Функция fetchFlight(from) асинхронная,
