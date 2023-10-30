@@ -1,68 +1,71 @@
 <html lang="en">
 
 <head>
-	<meta charset="UTF-8">
-	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<!-- добавим стили mocha для отображения результатов -->
-	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/mocha/3.2.0/mocha.css">
-	<link rel="stylesheet" href="css/style.css">
-	<!-- добавляем сам фреймворк mocha -->
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/mocha/3.2.0/mocha.js"></script>
-	<script>
-		// включаем режим тестирования в стиле BDD
-		mocha.setup('bdd');
-	</script>
-	<!-- добавим chai -->
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/chai/3.5.0/chai.js"></script>
-	<script>
-		// chai предоставляет большое количество функций. Объявим assert глобально
-		let assert = chai.assert;
-	</script>
-	<title>TEST</title>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- добавим стили mocha для отображения результатов -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/mocha/3.2.0/mocha.css">
+    <link rel="stylesheet" href="css/style.css">
+    <!-- добавляем сам фреймворк mocha -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mocha/3.2.0/mocha.js"></script>
+    <script>
+        // включаем режим тестирования в стиле BDD
+        mocha.setup('bdd');
+    </script>
+    <!-- добавим chai -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/chai/3.5.0/chai.js"></script>
+    <script>
+        // chai предоставляет большое количество функций. Объявим assert глобально
+        let assert = chai.assert;
+    </script>
+    <title>TEST</title>
 </head>
 
 <body>
-	<header>
-		<nav class="menu">
-			<ul class="menu__list">
-				<li class="menu__item">
-					<a class="menu__link" href="index.html">Home</a>
-				</li>
-				<li class="menu__item">
-					<a class="menu__link" href="test.html">Тесты</a>
-				</li>
-			</ul>
-		</nav>
-	</header>
-	<script src="js/main.js"></script>
+<header>
+    <nav class="menu">
+        <ul class="menu__list">
+            <li class="menu__item">
+                <a class="menu__link" href="index.html">Home</a>
+            </li>
+            <li class="menu__item">
+                <a class="menu__link" href="test.html">Тесты</a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<script src="js/main.js"></script>
 
-	<!-- скрипт с функцией -->
-	<!-- <script src="test/chekSpam/func.js"></script>
-	<script src="test/chekSpam/describe.js"></script>
+<!-- скрипт с функцией -->
+<!-- <script src="test/chekSpam/func.js"></script>
+<script src="test/chekSpam/describe.js"></script>
 
-	<script src="test/getMaxSubSum/func.js"></script>
-	<script src="test/getMaxSubSum/describe.js"></script>
+<script src="test/getMaxSubSum/func.js"></script>
+<script src="test/getMaxSubSum/describe.js"></script>
 
-	<script src="test/rangeArray/func.js"></script>
-	<script src="test/rangeArray/describe.js"></script>
+<script src="test/rangeArray/func.js"></script>
+<script src="test/rangeArray/describe.js"></script>
 
-	<script src="test/takeWhile/func.js"></script>
-	<script src="test/takeWhile/describe.js"></script>
+<script src="test/takeWhile/func.js"></script>
+<script src="test/takeWhile/describe.js"></script>
 
-	<script src="test/zipWith/func.js"></script>
-	<script src="test/zipWith/describe.js"></script> -->
+<script src="test/zipWith/func.js"></script>
+<script src="test/zipWith/describe.js"></script> -->
 
-	<script src="test/numberSum/func.js"></script>
-	<script src="test/numberSum/describe.js"></script>
+<!--<script src="test/numberSum/func.js"></script>
+<script src="test/numberSum/describe.js"></script>-->
+
+<script src="test/autocomplete/func.js"></script>
+<script src="test/autocomplete/describe.js"></script>
 
 
-	<!-- элемент с id="mocha" будет содержать результаты тестов -->
-	<div id="mocha"></div>
-	<!-- запускаем тесты! -->
-	<script>
-		mocha.run();
-	</script>
+<!-- элемент с id="mocha" будет содержать результаты тестов -->
+<div id="mocha"></div>
+<!-- запускаем тесты! -->
+<script>
+    mocha.run();
+</script>
 
 
 </body>
