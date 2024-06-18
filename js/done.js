@@ -26,10 +26,46 @@ rl.on('line', line => {
 //? Вариант 2 НЕ мой
 
 //--------------------------------------------------------------------------//*
-
+//Напишите класс, который при получении строки будет возвращать строку в верхнем
+// регистре , в которой каждая буква сдвинута вперед в алфавите на любое количество мест,
+// на которые был инициализирован шифр.
+// var c = new CaesarCipher(5); // creates a CipherHelper with a shift of five
+// c.encode('Codewars'); // returns 'HTIJBFWX'
+// c.decode('BFKKQJX'); // returns 'WAFFLES'
 //? Вариант 1 МОЙ
+class CaesarCipher {
+    constructor(num) {
+        this.num = num;
+    }
+
+    encode(word) {
+        return word.replace(/[A-Za-z]/g, (match, offset, input) => {
+            let charCode = match.toUpperCase().charCodeAt(0);
+            let candidate = charCode + this.num;
+            let newCharCode = candidate <= 90
+                ? candidate
+                : 64 + (candidate - 90);
+            return String.fromCharCode(newCharCode);
+        });
+    }
+
+    decode(word) {
+        return word.replace(/\w/g, (match, offset, input) => {
+            let charCode = match.toUpperCase().charCodeAt(0);
+            let candidate = charCode - this.num;
+            let newCharCode = candidate >= 65
+                ? candidate
+                : 91 - (65 - candidate);
+            return String.fromCharCode(newCharCode);
+        });
+    }
+}
 
 //? Вариант 2 НЕ мой
+let CaesarCipher2 = function (shift) {
+    this.encode = (str) => str.replace(/[a-z]/gi, (c) => String.fromCharCode((c.toUpperCase().charCodeAt(0) + shift - 65) % 26 + 65));
+    this.decode = (str) => str.replace(/[a-z]/gi, (c) => String.fromCharCode((c.toUpperCase().charCodeAt(0) + 26 - shift - 65) % 26 + 65));
+};
 
 //--------------------------------------------------------------------------
 //* Самый дорогой путь и сам путь
