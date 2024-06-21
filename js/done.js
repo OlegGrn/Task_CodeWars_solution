@@ -1,22 +1,99 @@
-/*
-let arr = []
-rl.on('line', line => {
-    let b = line.split(" ").map(Number);
-    arr.push(b);
-
-    if (arr.length === arr[0][0] + 1) {
-        const [N, M] = arr.shift();
-
-        console.log()
-    }
-    rl.close();
-});
-*/
 //*
-
 //? Вариант 1 МОЙ
 
 //? Вариант 2 НЕ мой
+
+//*
+// ? Вариант 1 МОЙ
+
+//? Вариант 2 НЕ мой
+
+//*
+// ? Вариант 1 МОЙ
+
+//? Вариант 2 НЕ мой
+
+//*
+//? Вариант 1 МОЙ
+
+//? Вариант 2 НЕ мой
+
+//*
+//? Вариант 1 МОЙ
+function formatDuration(seconds) {
+
+    let result = [{qty: 0, rest: seconds, name: ""}];
+
+    do {
+        getData(result[result.length - 1].rest, result);
+    } while (result[result.length - 1].rest !== 0);
+    return result.reduce((sum, item, ind, arr) => {
+        if (ind === 0)
+            return sum;
+        return sum += getValue(item, ind, arr.length);
+    }, "");
+}
+
+function getData(sec, result) {
+
+    const minuteSec = 60;
+    const hourSec = minuteSec * 60;
+    const daySec = hourSec * 24;
+    const yearSec = daySec * 365;
+
+    switch (true) {
+        case sec >= yearSec:
+            madeData(result, sec, yearSec, "year", "years");
+            break;
+        case sec >= daySec:
+            madeData(result, sec, daySec, "day", "days");
+            break;
+        case sec >= hourSec:
+            madeData(result, sec, hourSec, "hour", "hours");
+            break;
+        case sec >= minuteSec:
+            madeData(result, sec, minuteSec, "minute", "minutes");
+            break;
+        case sec > 0:
+            madeData(result, sec, 1, "second", "seconds");
+            break;
+        default:
+            result.push({qty: 0, rest: 0, name: "now"});
+    }
+}
+
+function madeData(arr, sec, pointSec, singular, plural) {
+    const num = Math.floor(sec / pointSec);
+    arr.push({
+        qty: num,
+        rest: sec % pointSec,
+        name: num > 1 ? plural : singular
+    });
+}
+
+function getValue(item, ind, length) {
+    switch (true) {
+        case (length - ind) === 1:
+            return ((item.qty === 0 ? "" : item.qty + " ") + item.name);
+        case (length - ind) === 2:
+            return (item.qty + " " + item.name + " and ");
+        default:
+            return (item.qty + " " + item.name + ", ");
+    }
+}
+
+//? Вариант 2 НЕ мой
+const formatDuration2 = seconds =>
+
+    !seconds ? 'now' : [Math.floor(seconds / 31536000), Math.floor(seconds / 86400) % 365, Math.floor(seconds / 3600) % 24, Math.floor(seconds / 60) % 60, seconds % 60]
+
+        .map((n, i) => !n ? "" : n + [' year', ' day', ' hour', ' minute', ' second'][i] + (n > 1 ? 's' : ''))
+
+        .filter(el => el)
+
+        .join(', ')
+
+        .replace(/,([^,]*)$/, ' and$1');
 
 //--------------------------------------------------------------------------
 //*Напишите функцию cakes(), которая принимает рецепт (объект) и доступные ингредиенты

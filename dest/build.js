@@ -102,15 +102,3 @@ function searchPoint(path, point) {
         }
     }
 }
-function cakes(recipe, available) {
-    let result = Infinity;
-    for (let key in recipe) {
-        if (!(key in available)) {
-            result = 0;
-            break;
-        }
-        let candidate = Math.floor(available[key] / recipe[key]);
-        result = Math.min(candidate, result);
-    }
-    return result;
-}
