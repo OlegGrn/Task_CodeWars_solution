@@ -288,7 +288,7 @@ function int(a, b) {
 //-------------------------------------------------------------------------------------
 //* показать маршрут из точки А в точку Х. Функция fetchFlight(from) асинхронная,
 // выдаёт список городов возможных к вылету из точки from
-// функция getPath(from, to, func = fetchFlight) принмает от и куда + fetchFlight и
+// функция getPath(from, to, func.js = fetchFlight) принмает от и куда + fetchFlight и
 // показывает результат массивом
 async function fetchFlight(from) {
     return data[from]
@@ -1322,7 +1322,7 @@ function delay(func, ms) {
 // let f2000 = delay(f, 2000);
 // f2000("test");
 
-//* Создайте декоратор spy(func), который должен возвращать обёртку,
+//* Создайте декоратор spy(func.js), который должен возвращать обёртку,
 //* которая сохраняет все вызовы функции в своём свойстве calls.
 //* Каждый вызов должен сохраняться как массив аргументов.
 //? Вариант 1 МОЙ
@@ -2987,9 +2987,9 @@ function debounce(func, ms) {
 
 let func = debounce(log, 2000);
 
-// func(3);
-// func(4);
-// setTimeout(() => func(5), 2500)
+// func.js(3);
+// func.js(4);
+// setTimeout(() => func.js(5), 2500)
 
 
 //* Тормозящий (throttling) декоратор
