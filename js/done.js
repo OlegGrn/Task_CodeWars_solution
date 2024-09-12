@@ -8,10 +8,17 @@
 
 //? Вариант 2 НЕ мой
 
-//*
+//* Конвектор Милисикунд в часы/мин/сек/милисек
 // ? Вариант 1 МОЙ
+function convectorMsToTime(ms) {
 
-//? Вариант 2 НЕ мой
+    let hs = Math.floor(ms / 3600000);
+    let min = Math.floor(ms / 60000) % 60;
+    let sec = Math.floor(ms / 1000) % 60;
+    let msRest = ms % 1000;
+
+    return `${hs}:${min}:${sec},${msRest}`
+}
 
 //*
 // (TEST)принимает массив интервалов и возвращает сумму длин всех интервалов.

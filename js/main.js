@@ -53,35 +53,7 @@ function makeCountEl(el) {
         return JSON.stringify(this)
     }*/
 
-let obj1 = {
-    name: "pete",
-    id: 3,
-    contact: {
-        street: "bridge",
-        number: 25
-    }
-}
-console.log(obj1)
 
-function clone(obj) {
-    let result = {}
-
-    for (let key in obj) {
-        if (typeof obj[key] === "object") {
-            result[key] = clone(obj[key])
-        } else {
-            result[key] = obj[key]
-        }
-
-    }
-    return result
-}
-
-let test = clone(obj1)
-
-console.log(test)
-console.log(obj1 === test)
-console.log(obj1.contact === test.contact)
 
 
 
