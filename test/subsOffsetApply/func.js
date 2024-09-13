@@ -25,7 +25,6 @@ function convectorTimeToMs(timeArr) {
 
 function convectorMsToTime(ms) {
     if (ms < 0 || ms > 359999999) return "###"
-
     const addZero = (num, qty) => num.toString().padStart(qty, "0");
 
     let hs = addZero(Math.floor(ms / 3600000), 2)
