@@ -15,8 +15,9 @@ describe("reverseInParens", function () {
     `, function () {
 
         let arrTest = [
-            //["h(el)lo", "h(le)lo"],
-            ["a ((d e) c b)", "a (b c (d e))"],
+            ["h((el)l)o", "h(l(el))o"],
+            ["h(el)lo", "h(le)lo"],
+            //["a ((d e) c b)", "a (b c (d e))"],
             //["one (two (three) four)", "one (ruof (three) owt)"],
             // ["one (ruof ((rht)ee) owt)", "one (two ((thr)ee) four)"]
         ]
