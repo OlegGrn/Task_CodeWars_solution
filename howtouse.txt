@@ -31,3 +31,22 @@ git push -u origin main
 git remote add origin https://github.com/OlegGrn/1_my_start_gulp.git
 git branch -M main
 git push -u origin main
+
+
+Использование TypeScript:
+добавлен в package.json
+"scripts": {
+  "build": "tsc --build",
+  "clean": "tsc --build --clean"
+},
+Для сборки в терминале
+1 Вариант npm run build
+2 Вариант tsc --build
+
+В tsconfig.json
+"outDir": "dest", - Куда попадает скомпилированный файл
+"include": [     - где искать файлы  *.ts
+    "src/**/*"
+  ]
+
+

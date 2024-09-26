@@ -41,17 +41,7 @@ function makeCountEl(el) {
     }
 }
 
-/*address: {
-            street: "bridge",
-            number: 25
-        },
-        email: {
-            google: "google@list.ru",
-            mail: "mail@list.ru"
-        }*/
-/*toString() {
-        return JSON.stringify(this)
-    }*/
+
 
 
 
