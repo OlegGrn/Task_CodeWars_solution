@@ -1,8 +1,12 @@
 
-function solution(str: string) {
+function cuckoo(str: string, num: number){
 
-    return (str.match(/\w{1,2}/g)?.map(i => i.length === 2? i: i+"_") || [])
+    let arr: string[] = str.match(/\d{2}/g) || [];
+    let [hours, min] = arr.map<>(i => +i);
+
+
+
+
+
 
 }
-
-console.log(solution(""))
