@@ -1,0 +1,7 @@
+
+
+function digitwiseAddition(N, K) {
+
+
+
+}
