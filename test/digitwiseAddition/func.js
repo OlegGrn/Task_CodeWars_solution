@@ -1,55 +1,42 @@
 function digitwiseAddition(N, K) {
 
-   /* let strN = N.toString();
-    while (K > 0) {
-        // console.log(strN)
-        strN = plusOne2(strN)
-        K--
+    let NStr = N.toString();
+    let NArr = NStr.split('');
+
+    const digitsCounter = Array(10).fill(0)
+
+    for (let digit of NArr) {
+        digitsCounter[parseInt(digit)]++
+    }
+    return helper(digitsCounter, K)
+}
+
+function helper(arrCounter, K) {
+
+    let rest = K;
+    const MOD = 1_000_000_007;
+
+    while (rest >= 9) {
+        let arrNum = Array(10).fill(0);
+
+        arrCounter.map((item, index) => {
+            if (item !== 0) {
+                if (index === 0) {
+                    arrNum[9] = item % MOD
+                } else {
+                    arrNum[index - 1] += item % MOD;
+                    arrNum[index] += item % MOD
+                }
+            }
+        })
+        arrCounter = arrNum;
+        rest -= 9;
     }
 
-    return strN.length*/
-
-    let num =  testing(N,K);
-    console.log(num)
-    return num
-
-}
-
-
-function plusOne(str) {
-    return str
-        .split("")
-        .reduce((str, i) => str + (+i + 1), "")
-}
-
-function plusOne2(str) {
-    let result = ""
-    for (let char of str) {
-        result += +char + 1
-    }
-    return result
-}
-
-function testing(N, K) {
-
-    let rest = K % 10;
-    console.log(rest)
-
-    let lengthStr = plusOne3(N.toString(), rest).length
-    console.log(lengthStr)
-
-    let num = K / 10;
-
-    let powNum = num < 1? 1: Math.ceil(num);
-    console.log(powNum)
-
-    return Math.pow(lengthStr, powNum)
-}
-
-function plusOne3(str, rest) {
-    return str
-        .split("")
-        .reduce((str, i) => str + (+i + rest), "")
+    return arrCounter.reduce((sum, item, index) => {
+        let num = (index + rest) > 9 ? item * 2 : item;
+        return ((sum += num) % MOD)
+    }, 0)
 }
 
 
